@@ -1,0 +1,11 @@
+- [x] Analisar menualuno.html para entender a estrutura e a barra de progresso.
+- [x] Analisar style_simplified_with_menu_updated.css para entender o estilo.
+- [x] Analisar certificado.png para entender o layout do certificado.
+- [x] Adicionar botão de emissão de certificado em menualuno.html.
+- [x] Implementar lógica para habilitar o botão apenas com 100% de progresso.
+- [x] Desenvolver a função de geração do certificado (HTML/CSS ou PDF).
+- [x] Integrar com Firebase para buscar dados do aluno.
+- [x] Preencher o certificado com os dados do Firebase.
+- [x] Testar a funcionalidade de emissão do certificado.
+- [x] Entregar os arquivos atualizados.
+
