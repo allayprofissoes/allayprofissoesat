@@ -66,7 +66,6 @@
                     <a href="#" class="nav-menu-link">
                         <i class="fas fa-comments"></i>
                         <span>Suporte</span>
-                        <span class="coming-soon-badge">Em Breve</span>
                     </a>
                 </li>
                 <li class="nav-menu-item" data-tab="configuracoes">
@@ -455,28 +454,54 @@
 
         <!-- Tab Content: Suporte -->
         <div class="tab-content" id="tab-suporte">
-            <div class="coming-soon-container">
-                <div class="coming-soon-card">
-                    <div class="coming-soon-icon">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <h2 class="coming-soon-title">Suporte</h2>
-                    <p class="coming-soon-description">
-                        Nossa central de suporte estará disponível em breve! Tire suas dúvidas, reporte problemas e receba ajuda especializada.
+            <div class="support-container">
+                <div class="support-header">
+                    <h2 class="support-title">
+                        <i class="fas fa-headset"></i>
+                        <span>Canais de Suporte</span>
+                    </h2>
+                    <p class="support-description">
+                        Escolha a melhor forma de entrar em contato conosco para obter ajuda.
                     </p>
-                    <div class="coming-soon-features">
-                        <div class="feature-item">
-                            <i class="fas fa-headset"></i>
-                            <span>Chat ao Vivo</span>
+                </div>
+                
+                <div class="support-options">
+                    <div class="support-card">
+                        <div class="support-card-icon whatsapp">
+                            <i class="fab fa-whatsapp"></i>
                         </div>
-                        <div class="feature-item">
-                            <i class="fas fa-question-circle"></i>
-                            <span>FAQ Interativo</span>
+                        <h3 class="support-card-title">WhatsApp</h3>
+                        <p class="support-card-description">Fale com nossa equipe de suporte via WhatsApp.</p>
+                        <div class="whatsapp-buttons" id="whatsapp-buttons">
+                            <button class="support-btn whatsapp-btn" data-number="5511912345678">
+                                <i class="fab fa-whatsapp"></i>
+                                Fale Conosco
+                            </button>
                         </div>
-                        <div class="feature-item">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Sistema de Tickets</span>
+                    </div>
+
+                    <div class="support-card">
+                        <div class="support-card-icon email">
+                            <i class="fas fa-envelope"></i>
                         </div>
+                        <h3 class="support-card-title">E-mail</h3>
+                        <p class="support-card-description">Envie-nos um e-mail e responderemos o mais breve possível.</p>
+                        <a href="mailto:suporte@allayprofissoes.com.br" class="support-btn email-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Enviar E-mail
+                        </a>
+                    </div>
+
+                    <div class="support-card">
+                        <div class="support-card-icon ai">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="support-card-title">Aylla (IA)</h3>
+                        <p class="support-card-description">Nossa inteligência artificial está em treinamento para te ajudar 24/7.</p>
+                        <button class="support-btn ai-btn disabled" disabled>
+                            <i class="fas fa-hourglass-half"></i>
+                            Em Breve
+                        </button>
                     </div>
                 </div>
             </div>
@@ -548,30 +573,113 @@
         let quizStartTime = null;
 
         // ===== TAB NAVIGATION =====
-        function switchTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab
-            const selectedTab = document.getElementById(`tab-${tabName}`);
-            if (selectedTab) {
-                selectedTab.classList.add('active');
+        async function loadSupportContacts() {
+    try {
+        const supportDoc = await firestore.collection("settings").doc("support").get();
+        const whatsappButtonsContainer = document.getElementById("whatsapp-buttons");
+        whatsappButtonsContainer.innerHTML = ""; // Limpa botões anteriores
+
+        if (supportDoc.exists) {
+            const data = supportDoc.data();
+
+            if (data.whatsappNumbers && Array.isArray(data.whatsappNumbers) && data.whatsappNumbers.length > 0) {
+                const whatsappNumber = data.whatsappNumbers[0]; // Usa o primeiro número
+                whatsappButtonsContainer.innerHTML = `
+                    <button class="support-btn whatsapp-btn" data-number="${whatsappNumber}" onclick="window.open('https://wa.me/${whatsappNumber}', '_blank')">
+                        <i class="fab fa-whatsapp"></i>
+                        Fale Conosco
+                    </button>
+                `;
+            } else {
+                // Caso não tenha números no Firestore
+                whatsappButtonsContainer.innerHTML = `
+                    <button class="support-btn whatsapp-btn" data-number="5511912345678" onclick="window.open('https://wa.me/5511912345678', '_blank')">
+                        <i class="fab fa-whatsapp"></i>
+                        Suporte Geral
+                    </button>
+                    <button class="support-btn whatsapp-btn" data-number="5511987654321" onclick="window.open('https://wa.me/5511987654321', '_blank')">
+                        <i class="fab fa-whatsapp"></i>
+                        Financeiro
+                    </button>
+                    <button class="support-btn whatsapp-btn" data-number="5511999998888" onclick="window.open('https://wa.me/5511999998888', '_blank')">
+                        <i class="fab fa-whatsapp"></i>
+                        Técnico
+                    </button>
+                `;
             }
-            
-            // Update menu items
-            document.querySelectorAll('.nav-menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            const selectedMenuItem = document.querySelector(`[data-tab="${tabName}"]`);
-            if (selectedMenuItem) {
-                selectedMenuItem.classList.add('active');
+
+            const emailLink = document.querySelector(".email-btn");
+            if (emailLink && data.email) {
+                emailLink.href = `mailto:${data.email}`;
             }
-            
-            currentTab = tabName;
+        } else {
+            console.log("Documento de contatos de suporte não encontrado no Firestore.");
+            whatsappButtonsContainer.innerHTML = `
+                <button class="support-btn whatsapp-btn" data-number="5511912345678" onclick="window.open('https://wa.me/5511912345678', '_blank')">
+                    <i class="fab fa-whatsapp"></i>
+                    Suporte Geral
+                </button>
+                <button class="support-btn whatsapp-btn" data-number="5511987654321" onclick="window.open('https://wa.me/5511987654321', '_blank')">
+                    <i class="fab fa-whatsapp"></i>
+                    Financeiro
+                </button>
+                <button class="support-btn whatsapp-btn" data-number="5511999998888" onclick="window.open('https://wa.me/5511999998888', '_blank')">
+                    <i class="fab fa-whatsapp"></i>
+                    Técnico
+                </button>
+            `;
+            document.querySelector(".email-btn").href = "mailto:suporte@allayprofissoes.com.br";
         }
+    } catch (error) {
+        console.error("Erro ao carregar contatos de suporte:", error);
+        document.getElementById("whatsapp-buttons").innerHTML = `
+            <button class="support-btn whatsapp-btn" data-number="5511912345678" onclick="window.open('https://wa.me/5511912345678', '_blank')">
+                <i class="fab fa-whatsapp"></i>
+                Suporte Geral
+            </button>
+            <button class="support-btn whatsapp-btn" data-number="5511987654321" onclick="window.open('https://wa.me/5511987654321', '_blank')">
+                <i class="fab fa-whatsapp"></i>
+                Financeiro
+            </button>
+            <button class="support-btn whatsapp-btn" data-number="5511999998888" onclick="window.open('https://wa.me/5511999998888', '_blank')">
+                <i class="fab fa-whatsapp"></i>
+                Técnico
+            </button>
+        `;
+        document.querySelector(".email-btn").href = "mailto:suporte@allayprofissoes.com.br";
+    }
+}
+
+function switchTab(tabName) {
+    // Esconde todos os conteúdos das abas
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Mostra a aba selecionada
+    const selectedTab = document.getElementById(`tab-${tabName}`);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+    
+    // Atualiza o menu
+    document.querySelectorAll('.nav-menu-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    const selectedMenuItem = document.querySelector(`[data-tab="${tabName}"]`);
+    if (selectedMenuItem) {
+        selectedMenuItem.classList.add('active');
+    }
+
+    currentTab = tabName;
+
+    // Se for aba de suporte, carrega os contatos
+    if (tabName === 'suporte') {
+        loadSupportContacts();
+    }
+}
+
 
         // ===== YOUTUBE API FUNCTIONS =====
         function onYouTubeIframeAPIReady() {
@@ -863,13 +971,14 @@
 
                     if (courseDocSnap.exists) {
                         const courseData = courseDocSnap.data();
-                        const courseItem = document.createElement("div");
-                        courseItem.classList.add("course-item");
-                        courseItem.dataset.courseId = courseDocSnap.id;
                         const courseName = courseData.name || courseDocSnap.id;
                         
                         const progress = await calculateCourseProgress(courseDocSnap.id, userEmail);
                         
+                        const courseItem = document.createElement("div");
+                        courseItem.classList.add("course-item");
+                        courseItem.dataset.courseId = courseDocSnap.id;
+
                         courseItem.innerHTML = `
                             <div class="course-icon">
                                 <i class="fas fa-book-open"></i>
@@ -1662,6 +1771,7 @@
                     closeMenu();
                 }
             });
+              }); // <-- esse é o fechamento do DOMContentLoaded
 
             // ===== VIDEO NAVIGATION BUTTONS =====
             const prevVideoBtn = document.getElementById("prev-video-btn");
@@ -1981,45 +2091,113 @@ async function downloadCertificatePDF(data) {
         console.error("Erro ao gerar PDF:", error);
         throw error;
     }
+
 }
-        // ===== FIREBASE AUTH =====
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUser = user;
-                    console.log("Usuário autenticado:", user.email);
+try {
+    const whatsappButtonsContainer = document.getElementById("whatsapp-buttons");
+    whatsappButtonsContainer.innerHTML = ''; // Limpa botões existentes
 
-                    const db = firebase.firestore();
-                    db.collection("students")
-                      .where("email", "==", user.email)
-                      .get()
-                      .then((querySnapshot) => {
-                        const welcomeText = document.getElementById("welcome-text");
-                        const navMenuUserName = document.getElementById('nav-menu-user-name');
-                        
-                        if (!querySnapshot.empty) {
-                          querySnapshot.forEach((doc) => {
-                            const nome = doc.data().name;
-                            if (welcomeText) welcomeText.textContent = ` ${nome}!`;
-                            if (navMenuUserName) navMenuUserName.textContent = nome;
-                          });
-                        } else {
-                          if (navMenuUserName) navMenuUserName.textContent = user.email;
-                        }
-                      })
-                      .catch((error) => {
-                        console.error("Erro ao buscar nome no Firestore:", error);
-                        const navMenuUserName = document.getElementById('nav-menu-user-name');
-                        if (navMenuUserName) navMenuUserName.textContent = user.email;
-                      });
-
-                    loadCourses(user.email);
-                    loadCertificates(user.email);
-                } else {
-                    console.log("Usuário não autenticado");
-                    window.location.href = "login.html";
-                }
-            });
+    if (data.whatsappNumbers && Array.isArray(data.whatsappNumbers)) {
+        data.whatsappNumbers.forEach(contact => {
+            const button = document.createElement('button');
+            button.className = 'support-btn whatsapp-btn';
+            button.dataset.number = contact.number;
+            button.innerHTML = `<i class="fab fa-whatsapp"></i> ${contact.label}`;
+            button.onclick = () => window.open(`https://wa.me/${contact.number}`, '_blank');
+            whatsappButtonsContainer.appendChild(button);
         });
+    } else {
+        // Fallback se não tiver números válidos no Firestore
+        whatsappButtonsContainer.innerHTML = `
+            <button class="support-btn whatsapp-btn" data-number="5511912345678" onclick="window.open('https://wa.me/5511912345678', '_blank')">
+                <i class="fab fa-whatsapp"></i>
+                Suporte Geral
+            </button>
+            <button class="support-btn whatsapp-btn" data-number="5511987654321" onclick="window.open('https://wa.me/5511987654321', '_blank')">
+                <i class="fab fa-whatsapp"></i>
+                Financeiro
+            </button>
+            <button class="support-btn whatsapp-btn" data-number="5511999998888" onclick="window.open('https://wa.me/5511999998888', '_blank')">
+                <i class="fab fa-whatsapp"></i>
+                Técnico
+            </button>
+        `;
+    }
+
+    const emailLink = document.querySelector('.email-btn');
+    if (emailLink && data.email) {
+        emailLink.href = `mailto:${data.email}`;
+    } else {
+        document.querySelector('.email-btn').href = 'mailto:suporte@allayprofissoes.com.br';
+    }
+
+} catch (error) {
+    console.error("Erro ao carregar contatos de suporte:", error);
+
+    // Fallback em caso de erro
+    document.getElementById("whatsapp-buttons").innerHTML = `
+        <button class="support-btn whatsapp-btn" data-number="5511912345678" onclick="window.open('https://wa.me/5511912345678', '_blank')">
+            <i class="fab fa-whatsapp"></i>
+            Suporte Geral
+        </button>
+        <button class="support-btn whatsapp-btn" data-number="5511987654321" onclick="window.open('https://wa.me/5511987654321', '_blank')">
+            <i class="fab fa-whatsapp"></i>
+            Financeiro
+        </button>
+        <button class="support-btn whatsapp-btn" data-number="5511999998888" onclick="window.open('https://wa.me/5511999998888', '_blank')">
+            <i class="fab fa-whatsapp"></i>
+            Técnico
+        </button>
+    `;
+    document.querySelector('.email-btn').href = 'mailto:suporte@allayprofissoes.com.br';
+}
+
+        // ===== FIREBASE AUTH =====
+           document.addEventListener('DOMContentLoaded', () => {
+    // ===== FIREBASE AUTH =====
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            currentUser = user;
+            console.log("Usuário autenticado:", user.email);
+
+            const db = firebase.firestore();
+            db.collection("students")
+              .where("email", "==", user.email)
+              .get()
+              .then((querySnapshot) => {
+                const welcomeText = document.getElementById("welcome-text");
+                const navMenuUserName = document.getElementById('nav-menu-user-name');
+                
+                if (!querySnapshot.empty) {
+                  querySnapshot.forEach((doc) => {
+                    const nome = doc.data().name;
+                    if (welcomeText) welcomeText.textContent = ` ${nome}!`;
+                    if (navMenuUserName) navMenuUserName.textContent = nome;
+                  });
+                } else {
+                  if (navMenuUserName) navMenuUserName.textContent = user.email;
+                }
+              })
+              .catch((error) => {
+                console.error("Erro ao buscar nome no Firestore:", error);
+                const navMenuUserName = document.getElementById('nav-menu-user-name');
+                if (navMenuUserName) navMenuUserName.textContent = user.email;
+              });
+
+            loadCourses(user.email);
+            loadCertificates(user.email);
+            
+            // Load support contacts on initial load if support tab is active
+            if (currentTab === 'suporte') {
+                loadSupportContacts();
+            }
+        } else {
+            console.log("Usuário não autenticado");
+            window.location.href = "login.html";
+        }
+    });
+});
+
 
         // Carrega o script da API do YouTube
         const tag = document.createElement('script');
@@ -2029,4 +2207,3 @@ async function downloadCertificatePDF(data) {
     </script>
 </body>
 </html>
-

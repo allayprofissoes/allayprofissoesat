@@ -1039,6 +1039,29 @@
         .student-item.disabled .btn:not(:disabled) {
             opacity: 1;
         }
+
+        /* ===== SUPPORT SETTINGS STYLES ===== */
+        .support-settings-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-xl);
+        }
+
+        .support-contact-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .support-contact-item input {
+            flex: 1;
+        }
+
+        .support-contact-item .btn-danger {
+            flex-shrink: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -1087,6 +1110,12 @@
                 <div class="nav-section">
                     <h3 class="nav-section-title">Sistema</h3>
                     <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="support-settings">
+                                <i class="nav-icon fas fa-headset"></i>
+                                Configuração Suporte
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-section="settings">
                                 <i class="nav-icon fas fa-cog"></i>
@@ -1321,6 +1350,59 @@
                             <!-- Students will be dynamically added here -->
                         </div>
                         <div id="students-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Support Settings Section -->
+                <div id="support-settings" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-headset"></i>
+                                Configurações de Contato para Suporte
+                            </h3>
+                        </div>
+                        <div class="support-settings-container">
+                            <!-- WhatsApp Numbers -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fab fa-whatsapp"></i>
+                                        Números de WhatsApp
+                                    </h4>
+                                    <div class="card-actions">
+                                        <button class="btn btn-primary btn-sm" id="add-whatsapp-number">
+                                            <i class="fas fa-plus"></i>
+                                            Adicionar Número
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="whatsapp-numbers-container">
+                                    <!-- WhatsApp numbers will be dynamically added here -->
+                                </div>
+                            </div>
+
+                            <!-- Email Address -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-envelope"></i>
+                                        Endereço de Email
+                                    </h4>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="support-email-input">Email de Suporte</label>
+                                    <input type="email" id="support-email-input" class="form-input" placeholder="Ex: suporte@allayprofissoes.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-actions" style="justify-content: flex-end; margin-top: var(--spacing-lg);">
+                            <button class="btn btn-success" id="save-support-settings">
+                                <i class="fas fa-save"></i>
+                                Salvar Configurações
+                            </button>
+                        </div>
+                        <div id="support-settings-message" class="message" style="display: none;"></div>
                     </div>
                 </div>
 
@@ -1623,6 +1705,13 @@
         const removeCourseCancel = document.getElementById("remove-course-cancel");
         let currentStudentForRemoval = null;
 
+        // Support Settings elements
+        const addWhatsappNumberButton = document.getElementById("add-whatsapp-number");
+        const whatsappNumbersContainer = document.getElementById("whatsapp-numbers-container");
+        const supportEmailInput = document.getElementById("support-email-input");
+        const saveSupportSettingsButton = document.getElementById("save-support-settings");
+        const supportSettingsMessageDiv = document.getElementById("support-settings-message");
+
         // Navigation
         navLinks.forEach(link => {
             link.addEventListener("click", (e) => {
@@ -1639,6 +1728,7 @@
                     courses: "Gerenciar Cursos",
                     enrollment: "Matrícula de Aluno",
                     students: "Gerenciar Alunos",
+                    "support-settings": "Configuração Suporte",
                     settings: "Configurações",
                     analytics: "Relatórios"
                 };
@@ -1657,6 +1747,8 @@
                     loadStudents();
                 } else if (targetSection === "dashboard") {
                     updateDashboardStats();
+                } else if (targetSection === "support-settings") {
+                    loadSupportSettings();
                 }
             });
         });
@@ -2790,6 +2882,87 @@
             }
         }
 
+        // Support Settings functions
+        function addWhatsappNumber(number = '', label = '') {
+            const div = document.createElement('div');
+            div.className = 'support-contact-item';
+            div.innerHTML = `
+                <input type="text" class="form-input whatsapp-label-input" placeholder="Ex: Suporte Geral" value="${label}" style="flex: 1; margin-right: 10px;">
+                <input type="text" class="form-input whatsapp-number-input" placeholder="Ex: 5511999998888" value="${number}" style="flex: 1;">
+                <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            whatsappNumbersContainer.appendChild(div);
+        }
+
+        async function loadSupportSettings() {
+            try {
+                const settingsDoc = await getDoc(doc(firestore, "settings", "support"));
+                if (settingsDoc.exists()) {
+                    const settings = settingsDoc.data();
+                    supportEmailInput.value = settings.email || '';
+                    
+                    whatsappNumbersContainer.innerHTML = '';
+                    if (settings.whatsappNumbers && Array.isArray(settings.whatsappNumbers)) {
+                        settings.whatsappNumbers.forEach(contact => {
+                            if (typeof contact === 'object' && contact.number && contact.label) {
+                                addWhatsappNumber(contact.number, contact.label);
+                            } else if (typeof contact === 'string') {
+                                // Backward compatibility for old format
+                                addWhatsappNumber(contact, 'Suporte');
+                            }
+                        });
+                    } else {
+                        // Add default entries if none are saved
+                        addWhatsappNumber('', 'Suporte Geral');
+                    }
+                } else {
+                    // Add default entries if no settings exist
+                    addWhatsappNumber('', 'Suporte Geral');
+                }
+            } catch (error) {
+                console.error("Erro ao carregar configurações de suporte:", error);
+                showMessage(supportSettingsMessageDiv, "Erro ao carregar configurações. Tente novamente.", "error");
+            }
+        }
+
+        async function saveSupportSettings() {
+            const email = supportEmailInput.value.trim();
+            const whatsappNumberInputs = document.querySelectorAll('.whatsapp-number-input');
+            const whatsappLabelInputs = document.querySelectorAll('.whatsapp-label-input');
+            
+            const whatsappNumbers = [];
+            
+            for (let i = 0; i < whatsappNumberInputs.length; i++) {
+                const number = whatsappNumberInputs[i].value.trim();
+                const label = whatsappLabelInputs[i].value.trim();
+                
+                if (number && label) {
+                    whatsappNumbers.push({
+                        number: number,
+                        label: label
+                    });
+                }
+            }
+
+            if (!email || whatsappNumbers.length === 0) {
+                showMessage(supportSettingsMessageDiv, "Por favor, preencha o email e pelo menos um número de WhatsApp com rótulo.", "error");
+                return;
+            }
+
+            try {
+                await setDoc(doc(firestore, "settings", "support"), {
+                    email: email,
+                    whatsappNumbers: whatsappNumbers
+                });
+                showMessage(supportSettingsMessageDiv, "Configurações de suporte salvas com sucesso!", "success");
+            } catch (error) {
+                console.error("Erro ao salvar configurações de suporte:", error);
+                showMessage(supportSettingsMessageDiv, "Erro ao salvar configurações. Tente novamente.", "error");
+            }
+        }
+
         // Utility functions
         function showMessage(element, message, type) {
             element.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
@@ -2843,6 +3016,8 @@
         editStudentCancel.addEventListener("click", closeEditStudentModal);
         removeCourseConfirm.addEventListener("click", removeCourseFromStudent);
         removeCourseCancel.addEventListener("click", closeRemoveCourseModal);
+        addWhatsappNumberButton.addEventListener("click", () => addWhatsappNumber());
+        saveSupportSettingsButton.addEventListener("click", saveSupportSettings);
 
         // Event listeners for automatic final value calculation
         modalCourseSelect.addEventListener("change", calculateFinalValue);
@@ -2877,4 +3052,5 @@
     </script>
 </body>
 </html>
+
 
