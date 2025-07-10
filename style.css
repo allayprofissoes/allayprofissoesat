@@ -27,10 +27,7 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 40mm 30mm;
-    background-image: url('background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+   
     
 }
 
@@ -176,7 +173,17 @@ body {
     justify-content: space-between;
     width: 100%;
     max-width: 140mm;
-    margin-top: -30mm;
+    margin-top: -45mm;
+}
+@page {
+  size: A4;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .signature-left,
