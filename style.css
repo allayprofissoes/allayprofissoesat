@@ -266,6 +266,45 @@ body {
     
     .signature-title {
         font-size: 1.8vw;
-    }
+    }/* Regras para forçar a renderização consistente do certificado para html2canvas */
+.pdf-render-container .certificate {
+    width: 210mm !important;
+    height: 297mm !important;
+    padding: 40mm 30mm !important; /* Mantenha o padding original do desktop */
+}
+
+.pdf-render-container .main-title {
+    font-size: 25mm !important;
+    letter-spacing: 1mm !important;
+}
+
+.pdf-render-container .subtitle {
+    font-size: 10mm !important;
+    letter-spacing: 1mm !important;
+}
+
+.pdf-render-container .student-name {
+    font-size: 13mm !important;
+}
+
+.pdf-render-container .course-text {
+    font-size: 6mm !important;
+}
+
+.pdf-render-container .modules-text {
+    font-size: 4.5mm !important;
+}
+
+.pdf-render-container .certify-text {
+    font-size: 4mm !important;
+}
+
+.pdf-render-container .signature-title {
+    font-size: 3.5mm !important;
+}
+
+/* Se houver outros elementos que mudam de tamanho no mobile, adicione-os aqui */
+/* Exemplo: .pdf-render-container .algum-outro-elemento { font-size: Xmm !important; } */
+
 }
 

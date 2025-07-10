@@ -2079,14 +2079,16 @@ async function downloadCertificatePDF(data) {
             .replace(/{{CARGA_HORARIA}}/g, data.courseHours)
             .replace(/{{MODULOS_CURSO}}/g, data.modules);
 
-        // 3. Criar um container temporário e invisível para renderizar o HTML
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.left = '-9999px'; // Move para fora da tela
+                // 3. Criar um container temporário e invisível para renderizar o HTML
+        const container = document.createElement("div");
+        container.classList.add('pdf-render-container'); // Adiciona uma classe para controle de CSS
+        container.style.position = "absolute";
+        container.style.left = "-9999px"; // Move para fora da tela
         // Para A4, uma largura de ~794px (210mm a 96dpi) é apropriada
-        container.style.width = '794px'; 
+        container.style.width = "794px"; 
         container.innerHTML = certificateHTML;
         document.body.appendChild(container);
+
 
         // Encontrar o elemento do certificado (lembre-se de adicionar id="certificate-wrapper" ao seu HTML)
         const certificateElement = container.querySelector('#certificate-wrapper');
