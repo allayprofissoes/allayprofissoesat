@@ -11,8 +11,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style_simplified_with_menu_updated.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Adicione no <head> do seu HTML principal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    
 </head>
 <body>
     <!-- Navigation Menu Lateral -->
@@ -2057,16 +2060,16 @@ function getModulesText(modules) {
     return modules.map(module => module.name || "Módulo sem nome").join(", ");
 }
 
+// Certifique-se de que as bibliotecas jsPDF e html2canvas estão carregadas
+const { jsPDF } = window.jspdf;
+
 async function downloadCertificatePDF(data) {
     try {
-        // Criar uma nova janela para o certificado
-        const certificateWindow = window.open('', '_blank', 'width=800,height=600');
-
-        // Carregar o template do certificado
+        // 1. Carregar o template do certificado
         const response = await fetch('certificado.html');
         let certificateHTML = await response.text();
 
-        // Substituir os placeholders pelos dados reais
+        // 2. Substituir os placeholders pelos dados reais
         certificateHTML = certificateHTML
             .replace(/{{NOME_ALUNO}}/g, data.studentName)
             .replace(/{{CPF_ALUNO}}/g, data.studentCPF)
@@ -2076,23 +2079,85 @@ async function downloadCertificatePDF(data) {
             .replace(/{{CARGA_HORARIA}}/g, data.courseHours)
             .replace(/{{MODULOS_CURSO}}/g, data.modules);
 
-        // Escrever o HTML na nova janela
-        certificateWindow.document.write(certificateHTML);
-        certificateWindow.document.close();
+        // 3. Criar um container temporário e invisível para renderizar o HTML
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px'; // Move para fora da tela
+        // Para A4, uma largura de ~794px (210mm a 96dpi) é apropriada
+        container.style.width = '794px'; 
+        container.innerHTML = certificateHTML;
+        document.body.appendChild(container);
 
-        // Aguardar o carregamento e imprimir
-        certificateWindow.onload = function () {
-            setTimeout(() => {
-                certificateWindow.print();
-            }, 1000);
-        };
+        // Encontrar o elemento do certificado (lembre-se de adicionar id="certificate-wrapper" ao seu HTML)
+        const certificateElement = container.querySelector('#certificate-wrapper');
+        if (!certificateElement) {
+            // Se você não adicionou o ID, esta linha vai gerar um erro.
+            throw new Error("Elemento com ID 'certificate-wrapper' não encontrado no template HTML.");
+        }
+
+        // 4. Usar html2canvas para capturar o elemento como uma imagem (canvas)
+        const canvas = await html2canvas(certificateElement, {
+            scale: 2,      // Aumenta a escala para melhor qualidade de imagem
+            useCORS: true  // Necessário se o certificado carregar imagens de outras origens
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        // ==================================================================
+        // 5. MODIFICADO: Usar jsPDF para criar o PDF em formato A4 Vertical
+        // ==================================================================
+        const pdf = new jsPDF({
+            orientation: 'portrait', // 'portrait' para vertical
+            unit: 'mm',              // Usar milímetros como unidade
+            format: 'a4'             // Formato do papel A4
+        });
+
+        // Obter as dimensões da página A4 em milímetros
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+        // Obter as dimensões da imagem (canvas)
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+
+        // Calcular a proporção da imagem para que ela caiba na largura do PDF sem distorcer
+        const canvasRatio = canvasWidth / canvasHeight;
+        
+        // A largura da imagem no PDF será a largura total da página
+        let finalWidth = pdfWidth;
+        // A altura será calculada a partir da proporção para não distorcer
+        let finalHeight = finalWidth / canvasRatio;
+
+        // Se a altura calculada for maior que a altura da página, recalculamos com base na altura
+        if (finalHeight > pdfHeight) {
+            finalHeight = pdfHeight;
+            finalWidth = finalHeight * canvasRatio;
+        }
+        
+        // Adicionar a imagem ao PDF. Os dois primeiros parâmetros são as coordenadas X e Y.
+        // (pdfWidth - finalWidth) / 2 centraliza a imagem horizontalmente.
+        pdf.addImage(imgData, 'PNG', (pdfWidth - finalWidth) / 2, 0, finalWidth, finalHeight);
+
+        // 6. Forçar o download do PDF
+        pdf.save(`Certificado-${data.studentName.replace(/ /g, '_')}.pdf`);
+
+        // 7. Limpeza: remover o container temporário do corpo do documento
+        document.body.removeChild(container);
 
     } catch (error) {
         console.error("Erro ao gerar PDF:", error);
+        alert("Erro ao gerar certificado: " + error.message); // Adiciona um alerta para o usuário
+
+        // Se houver um container pendurado por causa de um erro, tente removê-lo
+        const tempContainer = document.querySelector('div[style*="left: -9999px"]');
+        if (tempContainer) {
+            document.body.removeChild(tempContainer);
+        }
         throw error;
     }
-
 }
+
+
 try {
     const whatsappButtonsContainer = document.getElementById("whatsapp-buttons");
     whatsappButtonsContainer.innerHTML = ''; // Limpa botões existentes
