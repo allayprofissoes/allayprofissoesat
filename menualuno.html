@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style_simplified_with_menu_updated.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <!-- Navigation Menu Lateral -->
@@ -36,17 +36,17 @@
                         <span>Sala de Aula</span>
                     </a>
                 </li>
-                <li class="nav-menu-item" data-tab="cursos">
+                 <!-- <li class="nav-menu-item" data-tab="cursos">
                     <a href="#" class="nav-menu-link">
                         <i class="fas fa-file-pdf"></i>
                         <span>Apostilas</span>
                         <span class="coming-soon-badge">Em Breve</span>
-                    </a>
+                    ADICIONAR DEPOIS </a>-->
                 </li>
                 <li class="nav-menu-item" data-tab="progresso">
                     <a href="#" class="nav-menu-link">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Progresso</span>
+                        <i class="fas fa-handshake"></i>
+                        <span>Afiliação</span>
                         <span class="coming-soon-badge">Em Breve</span>
                     </a>
                 </li>
@@ -71,11 +71,10 @@
                         <span>Suporte</span>
                     </a>
                 </li>
-                <li class="nav-menu-item" data-tab="configuracoes">
+                <li class="nav-menu-item" data-tab="politica-privacidade">
                     <a href="#" class="nav-menu-link">
-                        <i class="fas fa-user-cog"></i>
-                        <span>Configurações</span>
-                        <span class="coming-soon-badge">Em Breve</span>
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Políticas e Privacidade</span>
                     </a>
                 </li>
             </ul>
@@ -506,30 +505,25 @@
             </div>
         </div>
 
-        <!-- Tab Content: Configurações -->
-        <div class="tab-content" id="tab-configuracoes">
-            <div class="coming-soon-container">
-                <div class="coming-soon-card">
-                    <div class="coming-soon-icon">
-                        <i class="fas fa-user-cog"></i>
-                    </div>
-                    <h2 class="coming-soon-title">Configurações</h2>
-                    <p class="coming-soon-description">
-                        Personalize sua experiência! Em breve você poderá ajustar todas as configurações da sua conta e preferências de aprendizado.
+        <!-- Tab Content: Políticas e Privacidade -->
+        <div class="tab-content" id="tab-politica-privacidade">
+            <div class="privacy-policy-container">
+                <div class="privacy-policy-header">
+                    <h2 class="privacy-policy-title">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Política de Privacidade</span>
+                    </h2>
+                    <p class="privacy-policy-description">
+                        Leia nossa política de privacidade para entender como seus dados são coletados e utilizados.
                     </p>
-                    <div class="coming-soon-features">
-                        <div class="feature-item">
-                            <i class="fas fa-user-edit"></i>
-                            <span>Perfil Personalizado</span>
+                </div>
+                <div class="privacy-policy-content" id="privacy-policy-display">
+                    <!-- O conteúdo da política de privacidade será carregado aqui -->
+                    <div class="loading-policy" id="loading-policy">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
                         </div>
-                        <div class="feature-item">
-                            <i class="fas fa-palette"></i>
-                            <span>Temas Visuais</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Privacidade e Segurança</span>
-                        </div>
+                        <p>Carregando política de privacidade...</p>
                     </div>
                 </div>
             </div>
@@ -681,6 +675,54 @@ function switchTab(tabName) {
     // Se for aba de cronograma (notificações), carrega as notificações
     if (tabName === 'cronograma') {
         loadNotifications();
+    }
+
+    // Se for aba de política de privacidade, carrega a política
+    if (tabName === 'politica-privacidade') {
+        loadPrivacyPolicy();
+    }
+}
+
+// ===== PRIVACY POLICY FUNCTIONS =====
+async function loadPrivacyPolicy() {
+    const policyDisplay = document.getElementById('privacy-policy-display');
+    const loadingPolicy = document.getElementById('loading-policy');
+
+    if (loadingPolicy) {
+        loadingPolicy.style.display = 'flex';
+    }
+
+    try {
+        const docRef = firestore.collection("settings").doc("privacyPolicy");
+        const docSnap = await docRef.get();
+
+        if (loadingPolicy) {
+            loadingPolicy.style.display = 'none';
+        }
+
+        if (docSnap.exists) {
+            policyDisplay.innerHTML = marked.parse(docSnap.data().content);
+        } else {
+            policyDisplay.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #64748b;">
+                    <i class="fas fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem; color: #475569;"></i>
+                    <p style="font-size: 1.125rem; font-weight: 500;">Nenhuma política de privacidade encontrada.</p>
+                    <p style="font-size: 0.875rem; margin-top: 0.5rem;">Entre em contato com o suporte para mais informações.</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error("Erro ao carregar política de privacidade:", error);
+        if (loadingPolicy) {
+            loadingPolicy.style.display = 'none';
+        }
+        policyDisplay.innerHTML = `
+            <div style="text-align: center; padding: 3rem; color: #ef4444;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <p style="font-size: 1.125rem; font-weight: 500;">Erro ao carregar política de privacidade</p>
+                <p style="font-size: 0.875rem; margin-top: 0.5rem;">Tente novamente mais tarde.</p>
+            </div>
+        `;
     }
 }
 
