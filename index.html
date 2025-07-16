@@ -1,1064 +1,1050 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Allay Profissões - Transformando Talentos em Carreiras de Sucesso</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Ubuntu", sans-serif;
-            background: linear-gradient(135deg, #04000e 0%, #002929 50%, #004040 100%);
-            min-height: 100vh;
-            color: #ffffff;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Efeito de partículas de fundo */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 80%, rgba(79, 172, 254, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(0, 242, 254, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Header moderno */
-        header {
-            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 0;
-        }
-
-        .nav-bar {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1rem;
-            height: 40px; /* ajuste também a barra se necessário */
-}
-        
-
-        .logo img {
-            width: 220px;
-            height: auto;
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
-        }
-
-        .nav-list ul {
-            display: flex;
-            list-style: none;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-link i {
-            font-size: 1rem;
-            color: #4facfe;
-        }
-
-        .nav-link:hover {
-            color: #ffffff;
-            background: rgba(79, 172, 254, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .nav-link:hover i {
-            color: #ffffff;
-            transform: scale(1.1);
-        }
-
-        .menu-icon {
-            display: none;
-        }
-
-        .menu-mobile {
-            display: none;
-        }
-
-        /* Carrossel de imagens */
-        .carousel-section {
-            padding: 4rem 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .carousel-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-        }
-
-        .carousel-wrapper {
-            overflow: hidden;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-        }
-
-        .carousel-track {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-
-        .carousel-slide {
-            min-width: 100%;
-            position: relative;
-        }
-
-        .carousel-slide img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .carousel-slide-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            padding: 3rem 2rem 2rem 2rem;
-            color: white;
-        }
-
-        .carousel-slide-content h3 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-        }
-
-        .carousel-slide-content p {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.5;
-        }
-
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .carousel-nav:hover {
-            background: rgba(79, 172, 254, 0.3);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-nav.prev {
-            left: 1rem;
-        }
-
-        .carousel-nav.next {
-            right: 1rem;
-        }
-
-        .carousel-nav i {
-            color: #ffffff;
-            font-size: 1.2rem;
-        }
-
-        .carousel-indicators {
-            position: absolute;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 0.5rem;
-            z-index: 10;
-        }
-
-        .carousel-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-indicator.active {
-            background: #4facfe;
-            transform: scale(1.2);
-        }
-
-        .carousel-indicator:hover {
-            background: rgba(79, 172, 254, 0.8);
-        }
-
-        /* Features Section */
-        .hero {
-            padding: 6rem 0;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .hero h1 {
-            font-family: "Commissioner", serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 3rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: #ffffff;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            padding: 1rem 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-
-        /* Seção de Recursos */
-        .features {
-            padding: 6rem 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .features-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-title h2 {
-            font-family: "Commissioner", serif;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-
-        .section-title p {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem auto;
-            font-size: 2rem;
-            color: #ffffff;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-
-        .feature-card p {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-        }
-
-        /* Seção Sobre */
-        .about {
-            padding: 6rem 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .about-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .about-content h2 {
-            font-family: "Commissioner", serif;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            color: #ffffff;
-        }
-
-        .about-content p {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .about-image {
-            position: relative;
-        }
-
-        .about-image img {
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Seção de Vídeo */
-        .video-section {
-            padding: 6rem 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .video-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            text-align: center;
-        }
-
-        .video-container h2 {
-            font-family: "Commissioner", serif;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            color: #ffffff;
-        }
-
-        .video-wrapper {
-            position: relative;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            padding: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .video-wrapper iframe {
-            width: 100%;
-            height: 450px;
-            border-radius: 15px;
-            border: none;
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 3rem 0 2rem 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            text-align: center;
-        }
-
-        .footer-logo {
-            margin-bottom: 2rem;
-        }
-
-        .footer-logo img {
-            width: 100px;
-            height: auto;
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: #4facfe;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 2rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        /* Responsividade */
-        @media (max-width: 1024px) {
-            .nav-bar {
-                padding: 0 1.5rem;
-            }
-
-            .hero h1 {
-                font-size: 3rem;
-            }
-
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-list {
-                display: none;
-            }
-
-            .menu-icon {
-                display: block;
-            }
-
-            .menu-icon button {
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 0.5rem;
-                border-radius: 8px;
-                transition: background 0.3s ease;
-            }
-
-            .menu-icon button:hover {
-                background: rgba(255, 255, 255, 0.1);
-            }
-
-            .menu-icon img {
-                width: 30px;
-                height: 30px;
-            }
-
-            .menu-mobile {
-                display: none;
-                background: rgba(0, 0, 0, 0.95);
-                backdrop-filter: blur(20px);
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                padding: 2rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-                animation: slideDown 0.3s ease;
-            }
-
-            @keyframes slideDown {
-                from {
-                    opacity: 0;
-                    transform: translateY(-20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .menu-mobile.active {
-                display: block;
-            }
-
-            .menu-mobile ul {
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .menu-mobile .nav-link {
-                display: flex;
-                align-items: center;
-                gap: 0.8rem;
-                padding: 1rem;
-                text-align: left;
-                border-radius: 8px;
-                background: rgba(255, 255, 255, 0.05);
-                transition: all 0.3s ease;
-            }
-
-            .menu-mobile .nav-link i {
-                font-size: 1.2rem;
-                color: #4facfe;
-                width: 20px;
-                text-align: center;
-            }
-
-            .menu-mobile .nav-link:hover {
-                background: rgba(79, 172, 254, 0.3);
-                transform: translateX(5px);
-            }
-
-            .menu-mobile .nav-link:hover i {
-                color: #ffffff;
-            }
-
-            .hero {
-                padding: 4rem 0;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-            }
-
-            .btn-primary, .btn-secondary {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
-            }
-
-            .about-container {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-                text-align: center;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .section-title h2 {
-                font-size: 2rem;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nav-bar {
-                padding: 0 1rem;
-            }
-
-            .logo img {
-                width: 200px;
-            }
-
-            .hero {
-                padding: 3rem 0;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-                line-height: 1.2;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .features {
-                padding: 4rem 0;
-            }
-
-            .about {
-                padding: 4rem 0;
-            }
-
-            .video-section {
-                padding: 4rem 0;
-            }
-
-            .carousel-wrapper iframe {
-                height: 300px;
-            }
-
-            .carousel-slide img {
-                height: 300px;
-            }
-
-            .carousel-slide-content {
-                padding: 2rem 1.5rem 1.5rem 1.5rem;
-            }
-
-            .carousel-slide-content h3 {
-                font-size: 1.5rem;
-            }
-
-            .carousel-nav {
-                width: 40px;
-                height: 40px;
-            }
-
-            .carousel-nav i {
-                font-size: 1rem;
-            }
-
-            .feature-card {
-                padding: 2rem 1.5rem;
-            }
-
-            .feature-icon {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-            }
-
-            .section-title h2 {
-                font-size: 1.8rem;
-            }
-
-            .about-content h2 {
-                font-size: 2rem;
-            }
-
-            .video-container h2 {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .hero-container,
-            .features-container,
-            .about-container,
-            .video-container,
-            .footer-content {
-                padding: 0 1rem;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-
-            .feature-card {
-                padding: 1.5rem 1rem;
-            }
-
-            .btn-primary, .btn-secondary {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-            }
-        }
-    </style>
+    <title>Painel Administrativo - Allay Profissões</title>
+    <!-- Firebase SDK -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav class="nav-bar">
-            <div class="logo">
-                <img src="LuanHenrique(2).png" alt="Allay Profissões">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1 class="sidebar-title">Allay Admin</h1>
+                <p class="sidebar-subtitle">Painel de Controle</p>
             </div>
-            <div class="nav-list">
-                <ul>
-                    <li class="nav-item"><a href="#inicio" class="nav-link"><i class="fas fa-home"></i> INÍCIO</a></li>
-                    <li class="nav-item"><a href="#cursos" class="nav-link"><i class="fas fa-graduation-cap"></i> CURSOS</a></li>
-                    <li class="nav-item"><a href="#sobre" class="nav-link"><i class="fas fa-info-circle"></i> SOBRE</a></li>
-                    <li class="nav-item"><a href="#contato" class="nav-link"><i class="fas fa-envelope"></i> CONTATO</a></li>
-                    <li class="nav-item"><a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> ENTRAR</a></li>
-                </ul>
+
+            <div class="nav-section">
+                    <h3 class="nav-section-title">Admnistração</h3>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                              <a href="#" class="nav-link active" data-section="dashboard">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                            <a href="#" class="nav-link" data-section="support-settings">
+                                <i class="nav-icon fas fa-headset"></i>
+                                Suporte
+                            </a>
+                        </li>
+
+                         <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="notifications">
+                                <i class="fas fa-bell"></i>
+                                Notificações
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="mudar">
+                                <i class="fas fa-briefcase"></i>
+                                Funcionários
+                            </a>
+                        </li>
+
+                      <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="mudar">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                Professores
+                            </a>
+                        </li>
+                         <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="privacy-policy">
+                                <i class="fas fa-shield-alt"></i>
+                                Políticas e Privacidade
+                            </a>
+                        </li>
+                
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3 class="nav-section-title">Pedagógico</h3>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                          
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="courses">
+                                <i class="nav-icon fas fa-book"></i>
+                                Cursos
+                            </a>
+                        </li>
+                       
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="enrollment">
+                                <i class="nav-icon fas fa-user-plus"></i>
+                                Matrículas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="students">
+                                <i class="nav-icon fas fa-users"></i>
+                                Alunos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="indications-history">
+                                <i class="nav-icon fas fa-handshake"></i>
+                                Histórico de Matrículas
+                            </a>
+                        </li>
+                         
+                
+                
+            <div class="nav-section">
+                    <h3 class="nav-section-title">Financeiro</h3>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="mudar">
+                                <i class="fas fa-dollar-sign"></i>
+                                Receitas Financeira
+                            </a>
+                        </li>
+
+
+                          <a href="#" class="nav-link active" data-section="mudar">
+                                <i class="fas fa-money-bill-wave"></i>
+                                Despesas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="mudar">
+                                <i class="fas fa-calendar-alt"></i>
+                                 Calendário Financeiro
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="mudar">
+                                <i class="fas fa-bullseye"></i>
+                                 Investimentos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content-wrapper">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title" id="page-title">Dashboard</h1>
+                    <div class="breadcrumb">
+                        <i class="fas fa-home"></i>
+                        <span>/ <span id="breadcrumb-current">Dashboard</span></span>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                    </div>
+                    
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">Administrador</div>
+                            <div class="user-role">Super Admin</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <!-- Privacy Policy Section -->
+                <div id="privacy-policy" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-shield-alt"></i>
+                                Política de Privacidade
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="privacy-policy-content">Conteúdo da Política de Privacidade</label>
+                            <textarea id="privacy-policy-content" class="form-input" rows="20" placeholder="Digite o conteúdo da política de privacidade aqui..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="publish-privacy-policy-button">
+                            <i class="fas fa-paper-plane"></i>
+                            Publicar Política
+                        </button>
+                        <div id="privacy-policy-message" class="message" style="display: none;"></div>
+                        
+                        <!-- Área de exibição da política formatada -->
+                        <div style="margin-top: var(--spacing-xl); border-top: 1px solid var(--border-color); padding-top: var(--spacing-lg);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-md);">
+                                <i class="fas fa-eye"></i>
+                                Visualização da Política Publicada
+                            </h4>
+                            <div id="privacy-policy-display" class="privacy-policy-content" style="background: var(--tertiary-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--spacing-lg); min-height: 200px; color: var(--text-secondary);">
+                                <p style="text-align: center; color: var(--text-muted); padding: var(--spacing-xl);">
+                                    Nenhuma política de privacidade publicada ainda.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="stat-value" id="total-courses">0</div>
+                            <div class="stat-label">Total de Cursos</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-value" id="total-students">0</div>
+                            <div class="stat-label">Alunos Ativos</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <div class="stat-value" id="total-videos">0</div>
+                            <div class="stat-label">Vídeos Disponíveis</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-value">98%</div>
+                            <div class="stat-label">Taxa de Satisfação</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Visão Geral do Sistema
+                            </h3>
+                        </div>
+                        <p style="color: var(--text-secondary); line-height: 1.6;">
+                            Bem-vindo ao painel administrativo da Allay Profissões. Aqui você pode gerenciar cursos, 
+                            alunos, matrículas e acompanhar o desempenho da plataforma. Use o menu lateral para 
+                            navegar entre as diferentes seções do sistema.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Courses Section -->
+                <div id="courses" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-plus-circle"></i>
+                                Criar Novo Curso
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="course-name-input">Nome do Curso</label>
+                            <input type="text" id="course-name-input" class="form-input" placeholder="Ex: Curso de Desenvolvimento Web">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="course-value-input">Valor em Reais (R$)</label>
+                            <input type="number" id="course-value-input" class="form-input" placeholder="Ex: 199.90" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="course-workload-input">Carga Horária (horas)</label>
+                            <input type="number" id="course-workload-input" class="form-input" placeholder="Ex: 40">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="course-description-input">Descrição do Curso</label>
+                            <textarea id="course-description-input" class="form-input" placeholder="Uma breve descrição sobre o curso..." rows="4"></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="add-course-button">
+                            <i class="fas fa-plus"></i>
+                            Adicionar Curso
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-edit"></i>
+                                Editar Curso Existente
+                            </h3>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="course-select">Selecionar Curso</label>
+                                <select id="course-select" class="form-select">
+                                    <option value="">Escolha um curso...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" id="select-course-button">
+                                <i class="fas fa-download"></i>
+                                Carregar Curso
+                            </button>
+                            <button class="btn btn-danger" id="delete-course-button">
+                                <i class="fas fa-trash"></i>
+                                Excluir Curso
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-layer-group"></i>
+                                Módulos e Vídeos: <span id="current-course-name" style="color: var(--accent-blue);">Nenhum Curso Selecionado</span>
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" id="add-module-button">
+                                    <i class="fas fa-plus"></i>
+                                    Adicionar Módulo
+                                </button>
+                                <button class="btn btn-success" id="save-course-data">
+                                    <i class="fas fa-save"></i>
+                                    Salvar Curso
+                                </button>
+                            </div>
+                        </div>
+                        <div id="modules-container">
+                            <!-- Modules will be dynamically added here -->
+                        </div>
+                        <div id="courses-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div id="notifications" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-bell"></i>
+                                Criar Nova Notificação
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="notification-title-input">Título da Notificação</label>
+                            <input type="text" id="notification-title-input" class="form-input" placeholder="Ex: Atualização importante do sistema">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="notification-content-input">Conteúdo da Notificação</label>
+                            <textarea id="notification-content-input" class="form-input" placeholder="Digite o conteúdo da notificação..." rows="6"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="notification-priority-select">Prioridade</label>
+                            <select id="notification-priority-select" class="form-select">
+                                <option value="normal">Normal</option>
+                                <option value="importante">Importante</option>
+                                <option value="urgente">Urgente</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" id="publish-notification-button">
+                            <i class="fas fa-paper-plane"></i>
+                            Publicar Notificação
+                        </button>
+                        <div id="notifications-message" class="message" style="display: none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-list"></i>
+                                Notificações Publicadas
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="loadNotifications()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Lista
+                                </button>
+                            </div>
+                        </div>
+                        <div id="notifications-list" class="student-list">
+                            <!-- Notifications will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enrollment Section -->
+                <div id="enrollment" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-plus"></i>
+                                Cadastrar Novo Aluno
+                            </h3>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: var(--font-size-sm);">
+                                Preencha todos os campos para criar uma nova conta de aluno
+                            </p>
+                        </div>
+                        
+                        <!-- Dados Pessoais -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-user" style="color: var(--accent-blue);"></i>
+                                Dados Pessoais
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="student-name-input">
+                                        <i class="fas fa-user" style="margin-right: var(--spacing-xs);"></i>
+                                        Nome Completo *
+                                    </label>
+                                    <input type="text" id="student-name-input" class="form-input" placeholder="Ex: João Silva Santos" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="student-cpf-input">
+                                        <i class="fas fa-id-card" style="margin-right: var(--spacing-xs);"></i>
+                                        CPF *
+                                    </label>
+                                    <input type="text" id="student-cpf-input" class="form-input" placeholder="000.000.000-00" maxlength="14" required>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        Digite apenas números, a formatação será aplicada automaticamente
+                                    </small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="student-phone-input">
+                                        <i class="fas fa-phone" style="margin-right: var(--spacing-xs);"></i>
+                                        Número de Telefone *
+                                    </label>
+                                    <input type="tel" id="student-phone-input" class="form-input" placeholder="(11) 99999-9999" maxlength="15" required>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        Inclua o DDD. Ex: (11) 99999-9999
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dados de Acesso -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-key" style="color: var(--accent-blue);"></i>
+                                Dados de Acesso
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="student-email-input">
+                                        <i class="fas fa-envelope" style="margin-right: var(--spacing-xs);"></i>
+                                        Email *
+                                    </label>
+                                    <input type="email" id="student-email-input" class="form-input" placeholder="Ex: joao@email.com" required>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        Este será o login do aluno na plataforma
+                                    </small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="student-password-input">
+                                        <i class="fas fa-lock" style="margin-right: var(--spacing-xs);"></i>
+                                        Senha *
+                                    </label>
+                                    <input type="password" id="student-password-input" class="form-input" placeholder="Mínimo 6 caracteres" required>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        A senha deve ter pelo menos 6 caracteres
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botão de Cadastro -->
+                        <div style="display: flex; justify-content: flex-end; gap: var(--spacing-md); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color);">
+                            <button type="button" class="btn btn-secondary" onclick="clearEnrollmentForm()">
+                                <i class="fas fa-times"></i>
+                                Limpar Formulário
+                            </button>
+                            <button class="btn btn-success" id="add-student-button">
+                                <i class="fas fa-user-plus"></i>
+                                Cadastrar Aluno
+                            </button>
+                        </div>
+                        
+                        <div id="enrollment-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="students" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-users"></i>
+                                Lista de Alunos
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="loadStudents()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Lista
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Search Bar -->
+                        <div style="margin-bottom: var(--spacing-lg); padding: 0 var(--spacing-lg);">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" for="student-search-input">
+                                    <i class="fas fa-search" style="margin-right: var(--spacing-xs);"></i>
+                                    Pesquisar Aluno
+                                </label>
+                                <input type="text" id="student-search-input" class="form-input" placeholder="Digite o nome ou CPF do aluno..." onkeyup="filterStudents()">
+                                <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                    Digite para pesquisar por nome ou CPF em tempo real
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div id="students-list" class="student-list">
+                            <!-- Students will be dynamically added here -->
+                        </div>
+                        <div id="students-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Indications History Section -->
+                <div id="indications-history" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-handshake"></i>
+                                Histórico de Indicações
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" id="add-indication-button">
+                                    <i class="fas fa-plus"></i>
+                                    Adicionar Indicação
+                                </button>
+                                <button class="btn btn-secondary" onclick="loadIndications()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Lista
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Aluno Indicador</th>
+                                        <th>Aluno Indicado</th>
+                                        <th>Curso</th>
+                                        <th>Data de Indicação</th>
+                                        <th>Status</th>
+                                        <th>Pontos</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="indications-tbody">
+                                    <!-- Indicações serão carregadas dinamicamente aqui -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="indications-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Support Settings Section -->
+                <div id="support-settings" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-headset"></i>
+                                Configurações de Contato para Suporte
+                            </h3>
+                        </div>
+                        <div class="support-settings-container">
+                            <!-- WhatsApp Numbers -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fab fa-whatsapp"></i>
+                                        Números de WhatsApp
+                                    </h4>
+                                    <div class="card-actions">
+                                        <button class="btn btn-primary btn-sm" id="add-whatsapp-number">
+                                            <i class="fas fa-plus"></i>
+                                            Adicionar Número
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="whatsapp-numbers-container">
+                                    <!-- WhatsApp numbers will be dynamically added here -->
+                                </div>
+                            </div>
+
+                            <!-- Email Address -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-envelope"></i>
+                                        Endereço de Email
+                                    </h4>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="support-email-input">Email de Suporte</label>
+                                    <input type="email" id="support-email-input" class="form-input" placeholder="Ex: suporte@allayprofissoes.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-actions" style="justify-content: flex-end; margin-top: var(--spacing-lg);">
+                            <button class="btn btn-success" id="save-support-settings">
+                                <i class="fas fa-save"></i>
+                                Salvar Configurações
+                            </button>
+                        </div>
+                        <div id="support-settings-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-cog"></i>
+                                Configurações do Sistema
+                            </h3>
+                        </div>
+                        <p style="color: var(--text-secondary);">
+                            Seção em desenvolvimento. Aqui você poderá configurar parâmetros gerais do sistema, 
+                            notificações, integrações e outras configurações avançadas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div id="analytics" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-bar"></i>
+                                Relatórios e Analytics
+                            </h3>
+                        </div>
+                        <p style="color: var(--text-secondary);">
+                            Seção em desenvolvimento. Aqui você poderá visualizar relatórios detalhados sobre 
+                            o desempenho dos alunos, estatísticas de uso da plataforma e métricas de engajamento.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Materials Section -->
+                <div id="materials" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-folder-open"></i>
+                                Gestão de Materiais
+                            </h3>
+                        </div>
+                        
+                        <!-- Upload Area -->
+                        <div class="upload-area" id="upload-area">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">Clique aqui ou arraste ficheiros para fazer upload</div>
+                            <div class="upload-subtext">Formatos suportados: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP, RAR, MP4, AVI, MOV</div>
+                            <input type="file" id="file-input" class="file-input" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar,.mp4,.avi,.mov">
+                        </div>
+                        
+                        <!-- Folder Management -->
+                        <div style="margin: var(--spacing-lg) 0;">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="folder-name-input">
+                                        <i class="fas fa-folder-plus" style="margin-right: var(--spacing-xs);"></i>
+                                        Criar Nova Pasta
+                                    </label>
+                                    <div style="display: flex; gap: var(--spacing-sm);">
+                                        <input type="text" id="folder-name-input" class="form-input" placeholder="Nome da pasta" style="flex: 1;">
+                                        <button type="button" id="create-folder-btn" class="btn btn-primary">
+                                            <i class="fas fa-folder-plus"></i>
+                                            Criar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="folder-select">
+                                        <i class="fas fa-folder" style="margin-right: var(--spacing-xs);"></i>
+                                        Pasta de Destino
+                                    </label>
+                                    <select id="folder-select" class="form-select">
+                                        <option value="">Pasta raiz</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div id="upload-progress-container" style="display: none; margin: var(--spacing-lg) 0;">
+                            <div class="upload-progress">
+                                <div class="upload-progress-bar" id="upload-progress-bar"></div>
+                            </div>
+                            <div class="upload-status" id="upload-status">Preparando upload...</div>
+                        </div>
+                        
+                        <!-- File List -->
+                        <div id="files-container" style="margin-top: var(--spacing-lg);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-list" style="color: var(--accent-blue);"></i>
+                                Ficheiros e Pastas
+                            </h4>
+                            <div id="files-list" style="min-height: 200px; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--spacing-md); background: var(--tertiary-bg);">
+                                <p style="text-align: center; color: var(--text-muted); padding: var(--spacing-xl);">
+                                    Nenhum ficheiro ou pasta encontrado. Faça upload de ficheiros ou crie uma pasta para começar.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div id="materials-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for Course Assignment -->
+    <div id="assign-course-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Atribuir Curso ao Aluno</h3>
             </div>
-            <div class="menu-icon">
-                <button onclick="toggleMobileMenu()">
-                    <img src="https://img.icons8.com/?size=70&id=30UIOfuJpZnZ&format=png&color=FFFFFF" alt="Menu">
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
+                Aluno: <strong id="modal-student-name" style="color: var(--text-primary);"></strong>
+            </p>
+            <div class="form-group">
+                <label class="form-label" for="modal-course-select">Selecionar Curso</label>
+                <select id="modal-course-select" class="form-select">
+                    <option value="">Escolha um curso...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-media-source">Mídia de Origem</label>
+                <select id="modal-media-source" class="form-select">
+                    <option value="">Selecione a mídia...</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="Google">Google</option>
+                    <option value="Indicacao">Indicação</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-payment-method">Método de Pagamento</label>
+                <select id="modal-payment-method" class="form-select">
+                    <option value="">Selecione o método...</option>
+                    <option value="Pix">Pix</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Cartao">Cartão</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-discount-value">Valor do Desconto (R$)</label>
+                <input type="number" id="modal-discount-value" class="form-input" placeholder="Ex: 50.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="modal-final-value">Valor Final (R$)</label>
+                <input type="number" id="modal-final-value" class="form-input" placeholder="Calculado automaticamente" step="0.01" readonly>
+            </div>
+            
+            <!-- Seção de Indicação -->
+            <div class="form-group">
+                <label class="form-label">Houve Indicação?</label>
+                <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xs);">
+                    <label style="display: flex; align-items: center; gap: var(--spacing-xs); cursor: pointer;">
+                        <input type="radio" name="indication-option" value="nao" id="indication-no" checked>
+                        <span>Não</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: var(--spacing-xs); cursor: pointer;">
+                        <input type="radio" name="indication-option" value="sim" id="indication-yes">
+                        <span>Sim</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Container de busca de indicador (inicialmente oculto) -->
+            <div id="indication-search-container" class="form-group" style="display: none;">
+                <label class="form-label" for="indication-search-input">
+                    <i class="fas fa-search" style="margin-right: var(--spacing-xs);"></i>
+                    Buscar Aluno Indicador
+                </label>
+                <input type="text" id="indication-search-input" class="form-input" placeholder="Digite o nome ou CPF do aluno indicador..." onkeyup="searchIndicatingStudent()">
+                <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                    Digite para buscar por nome ou CPF em tempo real
+                </small>
+                
+                <!-- Lista de resultados da busca -->
+                <div id="indication-search-results" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-top: var(--spacing-sm); background: var(--tertiary-bg); display: none;">
+                    <!-- Resultados da busca serão exibidos aqui -->
+                </div>
+                
+                <!-- Campo oculto para armazenar o email do indicador selecionado -->
+                <input type="hidden" id="selected-indicator-email" value="">
+            </div>
+            
+            <!-- Campo para exibir o bônus de indicação -->
+            <div id="indication-bonus-container" class="form-group" style="display: none;">
+                <label class="form-label" for="indication-bonus-value">Bônus de Indicação (10% do valor final)</label>
+                <input type="number" id="indication-bonus-value" class="form-input" placeholder="Calculado automaticamente" step="0.01" readonly style="background: var(--success-green); color: white; font-weight: bold;">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-success" id="assign-course-confirm">
+                    <i class="fas fa-check"></i>
+                    Atribuir Curso
+                </button>
+                <button class="btn btn-secondary" id="assign-course-cancel">
+                    <i class="fas fa-times"></i>
+                    Cancelar
                 </button>
             </div>
-        </nav>
-        <div class="menu-mobile" id="mobile-menu">
-            <ul>
-                <li class="nav-item"><a href="#inicio" class="nav-link"><i class="fas fa-home"></i> INÍCIO</a></li>
-                <li class="nav-item"><a href="#cursos" class="nav-link"><i class="fas fa-graduation-cap"></i> CURSOS</a></li>
-                <li class="nav-item"><a href="#sobre" class="nav-link"><i class="fas fa-info-circle"></i> SOBRE</a></li>
-                <li class="nav-item"><a href="#contato" class="nav-link"><i class="fas fa-envelope"></i> CONTATO</a></li>
-                <li class="nav-item"><a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> ENTRAR</a></li>
-            </ul>
         </div>
-    </header>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="inicio">
-        <div class="hero-container">
-            <h1>Transformando Talentos em Carreiras de Sucesso</h1>
-            <p>Prepare-se para o mercado de trabalho com cursos práticos e orientados para as reais necessidades do mundo moderno. Na Allay Profissões, seu futuro começa hoje.</p>
-            <div class="cta-buttons">
-                <a href="#cursos" class="btn-primary">
-                    <i class="fas fa-play"></i>
-                    Explorar Cursos
-                </a>
-                <a href="login.html" class="btn-secondary">
-                    <i class="fas fa-user"></i>
-                    Fazer Login
-                </a>
+    <!-- Modal for Student Profile -->
+    <div id="student-profile-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Perfil do Aluno</h3>
             </div>
-        </div>
-    </section>
-
-    <!-- Carrossel de Imagens -->
-    <section class="carousel-section">
-        <div class="carousel-container">
-            <div class="carousel-wrapper">
-                <div class="carousel-track" id="carousel-track">
-                    <div class="carousel-slide">
-                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Equipe colaborativa">
-                        <div class="carousel-slide-content">
-                            <h3>Aprendizado Colaborativo</h3>
-                            <p>Desenvolva suas habilidades em um ambiente colaborativo e dinâmico, com suporte de professores especializados.</p>
-                        </div>
-                    </div>
-                    <div class="carousel-slide">
-                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Tecnologia moderna">
-                        <div class="carousel-slide-content">
-                            <h3>Tecnologia de Ponta</h3>
-                            <p>Utilize as ferramentas mais modernas do mercado e prepare-se para os desafios tecnológicos do futuro.</p>
-                        </div>
-                    </div>
-                    <div class="carousel-slide">
-                        <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1526&q=80" alt="Sucesso profissional">
-                        <div class="carousel-slide-content">
-                            <h3>Sucesso Garantido</h3>
-                            <p>Nossos alunos conquistam as melhores posições no mercado de trabalho com nossa metodologia comprovada.</p>
-                        </div>
-                    </div>
-                    <div class="carousel-slide">
-                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Networking">
-                        <div class="carousel-slide-content">
-                            <h3>Networking Profissional</h3>
-                            <p>Conecte-se com profissionais da área e construa uma rede de contatos que impulsionará sua carreira.</p>
-                        </div>
-                    </div>
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
+                Visualizando perfil de: <strong id="profile-modal-student-email" style="color: var(--text-primary);"></strong>
+            </p>
+            
+            <!-- Informações Editáveis -->
+            <div class="form-group">
+                <label class="form-label" for="profile-student-name">Nome Completo</label>
+                <input type="text" id="profile-student-name" class="form-input" placeholder="Ex: João Silva Santos">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="profile-student-phone">Telefone</label>
+                <input type="tel" id="profile-student-phone" class="form-input" placeholder="(11) 99999-9999">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="profile-student-cpf">CPF</label>
+                <input type="text" id="profile-student-cpf" class="form-input" placeholder="000.000.000-00">
+            </div>
+            
+            <!-- Informações Não Editáveis -->
+            <div class="form-group">
+                <label class="form-label">Email (não editável)</label>
+                <input type="email" id="profile-student-email-display" class="form-input" readonly style="background: var(--primary-bg); opacity: 0.7;">
+            </div>
+            
+            <!-- Cursos Atribuídos -->
+            <div class="form-group">
+                <label class="form-label">Cursos Atribuídos</label>
+                <div id="profile-assigned-courses" style="padding: var(--spacing-md); background: var(--tertiary-bg); border-radius: var(--radius-md); min-height: 50px;">
+                    <!-- Courses will be displayed here -->
                 </div>
-                <button class="carousel-nav prev" onclick="moveCarousel(-1)">
-                    <i class="fas fa-chevron-left"></i>
+            </div>
+            
+            <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--tertiary-bg); border-radius: var(--radius-md);">
+                <p style="color: var(--text-secondary); font-size: var(--font-size-sm); margin: 0;">
+                    <i class="fas fa-info-circle" style="color: var(--accent-blue);"></i>
+                    As alterações serão salvas no banco de dados. Email e senha não podem ser editados por aqui.
+                </p>
+            </div>
+            
+            <!-- Ações do Modal -->
+            <div class="modal-actions">
+                <button class="btn btn-warning" id="profile-save-changes">
+                    <i class="fas fa-save"></i>
+                    Salvar Alterações
                 </button>
-                <button class="carousel-nav next" onclick="moveCarousel(1)">
-                    <i class="fas fa-chevron-right"></i>
+                <button class="btn btn-primary" id="profile-assign-course">
+                    <i class="fas fa-book"></i>
+                    Atribuir Curso
                 </button>
-                <div class="carousel-indicators">
-                    <div class="carousel-indicator active" onclick="goToSlide(0)"></div>
-                    <div class="carousel-indicator" onclick="goToSlide(1)"></div>
-                    <div class="carousel-indicator" onclick="goToSlide(2)"></div>
-                    <div class="carousel-indicator" onclick="goToSlide(3)"></div>
-                </div>
+                <button class="btn btn-secondary" id="profile-remove-course">
+                    <i class="fas fa-minus-circle"></i>
+                    Remover Curso
+                </button>
+                <button class="btn btn-danger" id="profile-remove-student">
+                    <i class="fas fa-trash"></i>
+                    Remover Aluno
+                </button>
+                <button class="btn btn-secondary" id="profile-close">
+                    <i class="fas fa-times"></i>
+                    Fechar
+                </button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Features Section -->
-    <section class="features" id="cursos">
-        <div class="features-container">
-            <div class="section-title">
-                <h2>Por que escolher a Allay Profissões?</h2>
-                <p>Oferecemos uma experiência de aprendizado única, focada no que realmente importa para sua carreira.</p>
+    <!-- Modal for Remove Course -->
+    <div id="remove-course-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Remover Curso do Aluno</h3>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3>Professores Especializados</h3>
-                    <p>Aprenda com profissionais experientes que atuam no mercado e conhecem as demandas atuais das empresas.</p>
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
+                Aluno: <strong id="remove-modal-student-name" style="color: var(--text-primary);"></strong>
+            </p>
+            <div class="form-group">
+                <label class="form-label">Selecionar Cursos para Remover</label>
+                <div id="remove-courses-list" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--spacing-md); background: var(--tertiary-bg);">
+                    <!-- Student's courses checkboxes will be dynamically added here -->
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <h3>Conteúdo Prático</h3>
-                    <p>Cursos dinâmicos com foco na prática, preparando você para situações reais do dia a dia profissional.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Orientação para o Mercado</h3>
-                    <p>Conteúdos alinhados às demandas atuais do mercado de trabalho, garantindo sua empregabilidade.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Competências Comportamentais</h3>
-                    <p>Desenvolvimento de soft skills essenciais para qualquer profissão e crescimento na carreira.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <h3>Certificação Reconhecida</h3>
-                    <p>Certificados que agregam valor ao seu currículo e são reconhecidos pelo mercado.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h3>Suporte Completo</h3>
-                    <p>Acompanhamento personalizado durante toda sua jornada de aprendizado e desenvolvimento.</p>
-                </div>
+            </div>
+            <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--error-red); border-radius: var(--radius-md); opacity: 0.1;">
+                <p style="color: var(--text-primary); font-size: var(--font-size-sm); margin: 0;">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--warning-yellow);"></i>
+                    Atenção: Esta ação removerá permanentemente os cursos selecionados do aluno. Esta operação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-danger" id="remove-course-confirm">
+                    <i class="fas fa-minus-circle"></i>
+                    Remover Cursos Selecionados
+                </button>
+                <button class="btn btn-secondary" id="remove-course-cancel">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- About Section -->
-    <section class="about" id="sobre">
-        <div class="about-container">
-            <div class="about-content">
-                <h2>Sobre a Allay Profissões</h2>
-                <p>A Allay Profissões é uma plataforma inovadora criada para preparar pessoas para o mercado de trabalho, com foco em formar profissionais altamente capacitados e prontos para enfrentar os desafios do mundo moderno.</p>
-                <p>Com uma equipe de professores especializados e conteúdos alinhados às demandas atuais, proporcionamos cursos dinâmicos, que vão desde as áreas técnicas até o desenvolvimento de competências comportamentais, essenciais para qualquer profissão.</p>
-                <p>Na Allay Profissões, acreditamos no potencial de cada aluno e nos comprometemos a ser a ponte entre a sua dedicação e as melhores oportunidades do mercado de trabalho.</p>
+    <!-- Modal for Add Indication -->
+    <div id="add-indication-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Adicionar Nova Indicação</h3>
             </div>
-            <div class="about-image">
-                <img src="LuanHenrique(2).png" alt="Allay Profissões" style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 20px;">
+            <div class="form-group">
+                <label class="form-label" for="indicator-student-search">Aluno Indicador</label>
+                <input type="text" id="indicator-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication("indicator")">
+                <div id="indicator-student-results" class="search-results-list" style="display: none;"></div>
+                <input type="hidden" id="selected-indicator-email">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="indicated-student-search">Aluno Indicado</label>
+                <input type="text" id="indicated-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication("indicated")">
+                <div id="indicated-student-results" class="search-results-list" style="display: none;"></div>
+                <input type="hidden" id="selected-indicated-email">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="indication-course-select">Curso</label>
+                <select id="indication-course-select" class="form-select">
+                    <option value="">Selecione o curso...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="indication-date">Data de Indicação</label>
+                <input type="date" id="indication-date" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="indication-status-select">Status</label>
+                <select id="indication-status-select" class="form-select">
+                    <option value="pending">Pendente</option>
+                    <option value="approved">Aprovado</option>
+                    <option value="rejected">Não Aprovado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="indication-points">Pontos (se aprovado)</label>
+                <input type="number" id="indication-points" class="form-input" placeholder="Ex: 10.00" step="0.01">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-success" id="save-indication-button">
+                    <i class="fas fa-save"></i>
+                    Salvar Indicação
+                </button>
+                <button class="btn btn-secondary" id="cancel-add-indication-button">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Video Section -->
-    <section class="video-section">
-        <div class="video-container">
-            <h2>Conheça Nossa Metodologia</h2>
-            <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/LcNEFVQeJzk" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                </iframe>
+    <!-- Modal for Material Upload -->
+    <div id="material-upload-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Adicionar Material Complementar</h3>
             </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contato">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <img src="LuanHenrique(2).png" alt="Allay Profissões">
-            </div>
-            <div class="footer-links">
-                <a href="#inicio">Início</a>
-                <a href="#cursos">Cursos</a>
-                <a href="#sobre">Sobre</a>
-                <a href="login.html">Entrar</a>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Allay Profissões. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Carrossel de imagens
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-        const indicators = document.querySelectorAll('.carousel-indicator');
-        const totalSlides = slides.length;
-
-        function updateCarousel() {
-            const track = document.getElementById('carousel-track');
-            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
+                Módulo: <strong id="upload-modal-module-name" style="color: var(--text-primary);"></strong>
+            </p>
             
-            // Atualizar indicadores
-            indicators.forEach((indicator, index) => {
-                indicator.classList.toggle('active', index === currentSlide);
-            });
-        }
-
-        function moveCarousel(direction) {
-            currentSlide += direction;
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">Clique aqui ou arraste arquivos para fazer upload</div>
+                <div class="upload-subtext">Formatos suportados: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP, RAR</div>
+                <input type="file" id="file-input" class="file-input" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar">
+            </div>
             
-            if (currentSlide >= totalSlides) {
-                currentSlide = 0;
-            } else if (currentSlide < 0) {
-                currentSlide = totalSlides - 1;
-            }
+            <!-- Área para criar pastas -->
+            <div style="margin: var(--spacing-md) 0;">
+                <label style="display: block; margin-bottom: var(--spacing-sm); color: var(--text-primary); font-weight: 500;">
+                    Pasta de destino:
+                </label>
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <input type="text" id="folder-name-input" placeholder="Digite o nome da nova pasta" 
+                           style="flex: 1; padding: var(--spacing-sm); border: 1px solid var(--border-color); border-radius: var(--border-radius); background: var(--input-bg); color: var(--quartiary);">
+                    <button type="button" id="create-folder-btn" class="btn btn-primary" style="white-space: nowrap;">
+                        <i class="fas fa-folder-plus"></i> Criar Pasta
+                    </button>
+                </div>
+                <select id="folder-select" style="width: 100%; margin-top: var(--spacing-sm); padding: var(--spacing-sm); border: 1px solid var(--border-color); border-radius: var(--border-radius); background: var(--input-bg); color: var(--quartiary); background-color:(--accent-blue-hover);">
+                    <option value="">Pasta raiz</option>
+                </select>
+            </div>
             
-            updateCarousel();
-        }
-
-        function goToSlide(slideIndex) {
-            currentSlide = slideIndex;
-            updateCarousel();
-        }
-
-        // Auto-play do carrossel
-        setInterval(() => {
-            moveCarousel(1);
-        }, 5000);
-
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('active');
-        }
-
-        // Smooth scrolling para links internos
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-                // Fechar menu mobile se estiver aberto
-                const mobileMenu = document.getElementById('mobile-menu');
-                mobileMenu.classList.remove('active');
-            });
-        });
-
-        // Fechar menu mobile ao clicar fora
-        document.addEventListener('click', function(e) {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuIcon = document.querySelector('.menu-icon');
+            <!-- Lista de arquivos selecionados -->
+            <div id="selected-files-container" style="display: none; margin: var(--spacing-md) 0;">
+                <h4 style="color: var(--shadow-heavy); margin-bottom: var(--spacing-sm);">Arquivos selecionados:</h4>
+                <div id="selected-files-list" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: var(--spacing-sm); background: var(--accent-blue-hover);">
+                </div>
+            </div>
             
-            if (!menuIcon.contains(e.target) && !mobileMenu.contains(e.target)) {
-                mobileMenu.classList.remove('active');
-            }
-        });
-    </script>
+            <div id="upload-progress-container" style="display: none;">
+                <div class="upload-progress">
+                    <div class="upload-progress-bar" id="upload-progress-bar"></div>
+                </div>
+                <div class="upload-status" id="upload-status">Preparando upload...</div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-success" id="upload-confirm" style="display: none;">
+                    <i class="fas fa-check"></i>
+                    Confirmar Upload
+                </button>
+                <button class="btn btn-secondary" id="upload-cancel">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script type="module" src="script.js"></script>
 </body>
 </html>
+
 
