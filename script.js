@@ -1975,9 +1975,7 @@
         saveIndicationButton.addEventListener("click", saveIndication);
         cancelAddIndicationButton.addEventListener("click", closeAddIndicationModal);
         
-
-        
-// Initialize the application
+         // Initialize the application
         loadCourses();
         updateDashboardStats();
 
