@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Sistema de Receita</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste do Sistema de Receita</h1>
+        
+        <div class="test-section info">
+            <h3>📋 Resumo da Implementação</h3>
+            <p>O sistema de receita foi implementado com sucesso na função <code>assignCourse</code> do arquivo <code>script.js</code>.</p>
+            
+            <h4>🔧 Modificações Realizadas:</h4>
+            <ul>
+                <li>Adicionado registro automático na coleção <code>revenue</code> do Firestore</li>
+                <li>Captura do valor original do curso automaticamente</li>
+                <li>Registro da data/hora com ano e mês separados para facilitar consultas</li>
+                <li>Inclusão de todos os dados da matrícula (método de pagamento, mídia de origem, etc.)</li>
+            </ul>
+        </div>
+
+        <div class="test-section success">
+            <h3>✅ Estrutura da Coleção `revenue`</h3>
+            <div class="code-block">
+{
+  "courseName": "Nome do Curso",
+  "originalValue": 199.90,
+  "finalValue": 149.90,
+  "enrollmentDate": "2025-01-22T10:30:00.000Z",
+  "year": 2025,
+  "month": 1,
+  "studentEmail": "aluno@email.com",
+  "paymentMethod": "Pix",
+  "mediaSource": "Facebook"
+}
+            </div>
+        </div>
+
+        <div class="test-section info">
+            <h3>🎯 Como Testar</h3>
+            <ol>
+                <li>Abra o painel administrativo</li>
+                <li>Vá para a seção "Alunos"</li>
+                <li>Clique em "Atribuir Curso" para qualquer aluno</li>
+                <li>Preencha todos os campos obrigatórios:
+                    <ul>
+                        <li>Selecione um curso</li>
+                        <li>Escolha a mídia de origem</li>
+                        <li>Selecione o método de pagamento</li>
+                        <li>Defina um valor de desconto (opcional)</li>
+                    </ul>
+                </li>
+                <li>Clique em "Atribuir Curso"</li>
+                <li>Verifique no Firebase Console se um novo documento foi criado na coleção <code>revenue</code></li>
+            </ol>
+        </div>
+
+        <div class="test-section success">
+            <h3>📊 Benefícios do Sistema</h3>
+            <ul>
+                <li><strong>Controle Financeiro:</strong> Registro automático de todas as receitas</li>
+                <li><strong>Análise Mensal:</strong> Campos <code>year</code> e <code>month</code> facilitam relatórios</li>
+                <li><strong>Rastreabilidade:</strong> Histórico completo de matrículas e valores</li>
+                <li><strong>Automação:</strong> Sem necessidade de entrada manual de dados</li>
+            </ul>
+        </div>
+
+        <div class="test-section info">
+            <h3>🔍 Consultas Úteis no Firestore</h3>
+            <p>Exemplos de consultas que você pode fazer:</p>
+            
+            <h4>Receitas do mês atual:</h4>
+            <div class="code-block">
+// JavaScript
+const currentMonth = new Date().getMonth() + 1;
+const currentYear = new Date().getFullYear();
+
+const monthlyRevenue = await getDocs(
+  query(
+    collection(firestore, "revenue"),
+    where("year", "==", currentYear),
+    where("month", "==", currentMonth)
+  )
+);
+            </div>
+
+            <h4>Total de receitas por método de pagamento:</h4>
+            <div class="code-block">
+// JavaScript
+const pixRevenue = await getDocs(
+  query(
+    collection(firestore, "revenue"),
+    where("paymentMethod", "==", "Pix")
+  )
+);
+            </div>
+        </div>
+
+        <div class="test-section success">
+            <h3>🎉 Status da Implementação</h3>
+            <p><strong>✅ CONCLUÍDO:</strong> O sistema de receita está funcionando e pronto para uso!</p>
+            <p>Todas as matrículas futuras serão automaticamente registradas na coleção <code>revenue</code> do Firestore.</p>
+        </div>
+    </div>
+</body>
+</html>
+

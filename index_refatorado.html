@@ -14,7 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- External CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_refatorado.css">
+    <link rel="stylesheet" href="financial-styles.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -58,12 +59,7 @@
                             </a>
                         </li>
 
-                      <li class="nav-item">
-                            <a href="#" class="nav-link" data-section="mudar">
-                                <i class="fas fa-chalkboard-teacher"></i>
-                                Professores
-                            </a>
-                        </li>
+                    
                          <li class="nav-item">
                             <a href="#" class="nav-link" data-section="privacy-policy">
                                 <i class="fas fa-shield-alt"></i>
@@ -83,7 +79,12 @@
                                 Cursos
                             </a>
                         </li>
-                       
+                         <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="teachers">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                Professores
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-section="enrollment">
                                 <i class="nav-icon fas fa-user-plus"></i>
@@ -104,7 +105,7 @@
                     <h3 class="nav-section-title">Financeiro</h3>
                     <ul class="nav-list">
                         <li class="nav-item">
-                            <a href="#" class="nav-link" data-section="mudar">
+                            <a href="#" class="nav-link" data-section="financial">
                                 <i class="fas fa-dollar-sign"></i>
                                 Receitas Financeira
                             </a>
@@ -201,6 +202,127 @@
                     </div>
                 </div>
 
+                <!-- Teachers Section -->
+                <div id="teachers" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-plus"></i>
+                                Cadastrar Novo Professor
+                            </h3>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: var(--font-size-sm);">
+                                Preencha todos os campos para criar uma nova conta de professor
+                            </p>
+                        </div>
+                        
+                        <!-- Dados Pessoais -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-user" style="color: var(--accent-blue);"></i>
+                                Dados Pessoais
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="teacher-name-input">
+                                        <i class="fas fa-user" style="margin-right: var(--spacing-xs);"></i>
+                                        Nome Completo *
+                                    </label>
+                                    <input type="text" id="teacher-name-input" class="form-input" placeholder="Ex: Maria Silva Santos" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="teacher-phone-input">
+                                        <i class="fas fa-phone" style="margin-right: var(--spacing-xs);"></i>
+                                        Número de Telefone *
+                                    </label>
+                                    <input type="tel" id="teacher-phone-input" class="form-input" placeholder="(11) 99999-9999" maxlength="15" required>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        Inclua o DDD. Ex: (11) 99999-9999
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dados de Acesso -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-key" style="color: var(--accent-blue);"></i>
+                                Dados de Acesso
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="teacher-email-input">
+                                        <i class="fas fa-envelope" style="margin-right: var(--spacing-xs);"></i>
+                                        Email *
+                                    </label>
+                                    <input type="email" id="teacher-email-input" class="form-input" placeholder="Ex: maria@escola.com" required>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        Este será o login do professor na plataforma
+                                    </small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="teacher-password-input">
+                                        <i class="fas fa-lock" style="margin-right: var(--spacing-xs);"></i>
+                                        Senha *
+                                    </label>
+                                    <input type="password" id="teacher-password-input" class="form-input" placeholder="Mínimo 6 caracteres" required>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        A senha deve ter pelo menos 6 caracteres
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botão de Cadastro -->
+                        <div style="display: flex; justify-content: flex-end; gap: var(--spacing-md); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color);">
+                            <button type="button" class="btn btn-secondary" onclick="clearTeacherForm()">
+                                <i class="fas fa-times"></i>
+                                Limpar Formulário
+                            </button>
+                            <button class="btn btn-success" id="add-teacher-button">
+                                <i class="fas fa-user-plus"></i>
+                                Cadastrar Professor
+                            </button>
+                        </div>
+                        
+                        <div id="teacher-message" class="message" style="display: none;"></div>
+                    </div>
+
+                    <!-- Lista de Professores -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-users"></i>
+                                Lista de Professores
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="loadTeachers()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Lista
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Search Bar -->
+                        <div style="margin-bottom: var(--spacing-lg); padding: 0 var(--spacing-lg);">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" for="teacher-search-input">
+                                    <i class="fas fa-search" style="margin-right: var(--spacing-xs);"></i>
+                                    Pesquisar Professor
+                                </label>
+                                <input type="text" id="teacher-search-input" class="form-input" placeholder="Digite o nome ou email do professor..." onkeyup="filterTeachers()">
+                                <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                    Digite para pesquisar por nome ou email em tempo real
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div id="teachers-list" class="student-list">
+                            <!-- Teachers will be dynamically added here -->
+                        </div>
+                        <div id="teachers-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
                 <!-- Dashboard Section -->
                 <div id="dashboard" class="section active">
                     <div class="stats-grid">
@@ -252,85 +374,178 @@
                     </div>
                 </div>
 
-                <!-- Courses Section -->
+                <!-- Courses Section - REFATORADO SEM ABAS -->
                 <div id="courses" class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-plus-circle"></i>
-                                Criar Novo Curso
-                            </h3>
+                    <!-- Seção 1: Criar Novo Curso -->
+                    <div class="course-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Criar Novo Curso
+                                </h3>
+                                <p style="color: var(--text-secondary); margin: 0; font-size: var(--font-size-sm);">
+                                    Preencha as informações básicas do curso
+                                </p>
+                            </div>
+                            
+                            <!-- Informações Básicas -->
+                            <div style="margin-bottom: var(--spacing-xl);">
+                                <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                    <i class="fas fa-book" style="color: var(--accent-blue);"></i>
+                                    Informações do Curso
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label" for="course-name-input">
+                                            <i class="fas fa-graduation-cap" style="margin-right: var(--spacing-xs);"></i>
+                                            Nome do Curso *
+                                        </label>
+                                        <input type="text" id="course-name-input" class="form-input" placeholder="Ex: Curso de Desenvolvimento Web" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="course-value-input">
+                                            <i class="fas fa-dollar-sign" style="margin-right: var(--spacing-xs);"></i>
+                                            Valor em Reais (R$) *
+                                        </label>
+                                        <input type="number" id="course-value-input" class="form-input" placeholder="Ex: 199.90" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label" for="course-workload-input">
+                                            <i class="fas fa-clock" style="margin-right: var(--spacing-xs);"></i>
+                                            Carga Horária (horas) *
+                                        </label>
+                                        <input type="number" id="course-workload-input" class="form-input" placeholder="Ex: 40" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="course-description-input">
+                                        <i class="fas fa-align-left" style="margin-right: var(--spacing-xs);"></i>
+                                        Descrição do Curso *
+                                    </label>
+                                    <textarea id="course-description-input" class="form-input" placeholder="Descreva o conteúdo e objetivos do curso..." rows="4" required></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Atribuição de Professor -->
+                            <div style="margin-bottom: var(--spacing-xl);">
+                                <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                    <i class="fas fa-chalkboard-teacher" style="color: var(--accent-blue);"></i>
+                                    Atribuição de Professor
+                                </h4>
+                                <div class="form-group">
+                                    <label class="form-label">Este curso terá um professor responsável?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input type="radio" name="has-teacher" value="nao" id="has-teacher-no" checked>
+                                            <span class="radio-custom"></span>
+                                            <span class="radio-text">
+                                                <i class="fas fa-times-circle" style="color: var(--danger-color); margin-right: var(--spacing-xs);"></i>
+                                                Não, será um curso autodidata
+                                            </span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="has-teacher" value="sim" id="has-teacher-yes">
+                                            <span class="radio-custom"></span>
+                                            <span class="radio-text">
+                                                <i class="fas fa-check-circle" style="color: var(--success-color); margin-right: var(--spacing-xs);"></i>
+                                                Sim, atribuir um professor
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Container de seleção de professor -->
+                                <div id="teacher-selection-container" class="form-group teacher-selection" style="display: none;">
+                                    <label class="form-label" for="course-teacher-select">
+                                        <i class="fas fa-user-tie" style="margin-right: var(--spacing-xs);"></i>
+                                        Selecionar Professor *
+                                    </label>
+                                    <select id="course-teacher-select" class="form-select">
+                                        <option value="">Escolha um professor...</option>
+                                    </select>
+                                    <small style="color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--spacing-xs); display: block;">
+                                        <i class="fas fa-info-circle" style="margin-right: var(--spacing-xs);"></i>
+                                        O professor selecionado será responsável por este curso
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearCourseForm()">
+                                    <i class="fas fa-times"></i>
+                                    Limpar Formulário
+                                </button>
+                                <button class="btn btn-success" id="add-course-button">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Criar Curso
+                                </button>
+                            </div>
+                            
+                            <div id="courses-message" class="message" style="display: none;"></div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" for="course-name-input">Nome do Curso</label>
-                            <input type="text" id="course-name-input" class="form-input" placeholder="Ex: Curso de Desenvolvimento Web">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="course-value-input">Valor em Reais (R$)</label>
-                            <input type="number" id="course-value-input" class="form-input" placeholder="Ex: 199.90" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="course-workload-input">Carga Horária (horas)</label>
-                            <input type="number" id="course-workload-input" class="form-input" placeholder="Ex: 40">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="course-description-input">Descrição do Curso</label>
-                            <textarea id="course-description-input" class="form-input" placeholder="Uma breve descrição sobre o curso..." rows="4"></textarea>
-                        </div>
-                        <button class="btn btn-primary" id="add-course-button">
-                            <i class="fas fa-plus"></i>
-                            Adicionar Curso
-                        </button>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-edit"></i>
-                                Editar Curso Existente
-                            </h3>
+                    <!-- Seção 2: Módulos e Conteúdo -->
+                    <div class="course-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-layer-group"></i>
+                                    Módulos e Vídeos: <span id="current-course-name" style="color: var(--accent-blue);">Nenhum Curso Selecionado</span>
+                                </h3>
+                                <div class="card-actions">
+                                    <button class="btn btn-primary" id="add-module-button">
+                                        <i class="fas fa-plus"></i>
+                                        Adicionar Módulo
+                                    </button>
+                                    <button class="btn btn-success" id="save-course-data">
+                                        <i class="fas fa-save"></i>
+                                        Salvar Curso
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="modules-container">
+                                <!-- Modules will be dynamically added here -->
+                            </div>
                         </div>
-                        <div class="form-grid">
+                    </div>
+
+                    <!-- Seção 3: Gerenciar Cursos -->
+                    <div class="course-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-edit"></i>
+                                    Gerenciar Cursos Existentes
+                                </h3>
+                                <p style="color: var(--text-secondary); margin: 0; font-size: var(--font-size-sm);">
+                                    Selecione um curso para editar ou excluir
+                                </p>
+                            </div>
                             <div class="form-group">
-                                <label class="form-label" for="course-select">Selecionar Curso</label>
+                                <label class="form-label" for="course-select">
+                                    <i class="fas fa-search" style="margin-right: var(--spacing-xs);"></i>
+                                    Selecionar Curso
+                                </label>
                                 <select id="course-select" class="form-select">
                                     <option value="">Escolha um curso...</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary" id="select-course-button">
-                                <i class="fas fa-download"></i>
-                                Carregar Curso
-                            </button>
-                            <button class="btn btn-danger" id="delete-course-button">
-                                <i class="fas fa-trash"></i>
-                                Excluir Curso
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-layer-group"></i>
-                                Módulos e Vídeos: <span id="current-course-name" style="color: var(--accent-blue);">Nenhum Curso Selecionado</span>
-                            </h3>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" id="add-module-button">
-                                    <i class="fas fa-plus"></i>
-                                    Adicionar Módulo
+                            <div class="form-actions">
+                                <button class="btn btn-primary" id="select-course-button">
+                                    <i class="fas fa-download"></i>
+                                    Carregar para Edição
                                 </button>
-                                <button class="btn btn-success" id="save-course-data">
-                                    <i class="fas fa-save"></i>
-                                    Salvar Curso
+                                <button class="btn btn-danger" id="delete-course-button">
+                                    <i class="fas fa-trash"></i>
+                                    Excluir Curso
                                 </button>
                             </div>
                         </div>
-                        <div id="modules-container">
-                            <!-- Modules will be dynamically added here -->
-                        </div>
-                        <div id="courses-message" class="message" style="display: none;"></div>
                     </div>
                 </div>
 
@@ -716,6 +931,108 @@
                         <div id="materials-message" class="message" style="display: none;"></div>
                     </div>
                 </div>
+
+                <!-- Financial Section -->
+                <div id="financial" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-dollar-sign"></i>
+                                Receitas Financeiras
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="loadRevenues()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Receitas
+                                </button>
+                                <button class="btn btn-primary" onclick="exportRevenueData()">
+                                    <i class="fas fa-download"></i>
+                                    Exportar Dados
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Financial Stats Cards -->
+                        <div class="stats-grid" style="margin-bottom: var(--spacing-lg);">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="stat-value" id="total-revenue">R$ 0,00</div>
+                                <div class="stat-label">Receita Total</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-month"></i>
+                                </div>
+                                <div class="stat-value" id="monthly-revenue">R$ 0,00</div>
+                                <div class="stat-label">Receita do Mês</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="stat-value" id="total-enrollments">0</div>
+                                <div class="stat-label">Total de Matrículas</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="stat-value" id="total-discount">R$ 0,00</div>
+                                <div class="stat-label">Total de Descontos</div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Options -->
+                        <div style="margin-bottom: var(--spacing-lg); padding: var(--spacing-md); background: var(--tertiary-bg); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-filter" style="color: var(--accent-blue);"></i>
+                                Filtros
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Período</label>
+                                    <select class="form-select" onchange="filterRevenuesByPeriod(this.value)">
+                                        <option value="all">Todos os períodos</option>
+                                        <option value="today">Hoje</option>
+                                        <option value="week">Esta semana</option>
+                                        <option value="month">Este mês</option>
+                                        <option value="year">Este ano</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Método de Pagamento</label>
+                                    <select class="form-select">
+                                        <option value="all">Todos os métodos</option>
+                                        <option value="pix">Pix</option>
+                                        <option value="dinheiro">Dinheiro</option>
+                                        <option value="cartao">Cartão</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Revenues List -->
+                        <div id="revenues-list" style="min-height: 300px;">
+                            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-muted);">
+                                <i class="fas fa-chart-line" style="font-size: 3em; margin-bottom: var(--spacing-md); opacity: 0.5;"></i>
+                                <h3 style="margin-bottom: var(--spacing-sm);">Carregando Receitas...</h3>
+                                <p>Clique em "Atualizar Receitas" para carregar os dados financeiros.</p>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Stats -->
+                        <div id="financial-stats-details" style="margin-top: var(--spacing-lg);">
+                            <!-- Detailed statistics will be populated by JavaScript -->
+                        </div>
+                        
+                        <div id="financial-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -1004,13 +1321,13 @@
                     Pasta de destino:
                 </label>
                 <div style="display: flex; gap: var(--spacing-sm);">
-                    <input type="text" id="folder-name-input" placeholder="Digite o nome da nova pasta" 
+                    <input type="text" id="modal-folder-name-input" placeholder="Digite o nome da nova pasta" 
                            style="flex: 1; padding: var(--spacing-sm); border: 1px solid var(--border-color); border-radius: var(--border-radius); background: var(--input-bg); color: var(--quartiary);">
-                    <button type="button" id="create-folder-btn" class="btn btn-primary" style="white-space: nowrap;">
+                    <button type="button" id="modal-create-folder-btn" class="btn btn-primary" style="white-space: nowrap;">
                         <i class="fas fa-folder-plus"></i> Criar Pasta
                     </button>
                 </div>
-                <select id="folder-select" style="width: 100%; margin-top: var(--spacing-sm); padding: var(--spacing-sm); border: 1px solid var(--border-color); border-radius: var(--border-radius); background: var(--input-bg); color: var(--quartiary); background-color:(--accent-blue-hover);">
+                <select id="modal-folder-select" style="width: 100%; margin-top: var(--spacing-sm); padding: var(--spacing-sm); border: 1px solid var(--border-color); border-radius: var(--border-radius); background: var(--input-bg); color: var(--quartiary); background-color:(--accent-blue-hover);">
                     <option value="">Pasta raiz</option>
                 </select>
             </div>
@@ -1041,10 +1358,6 @@
             </div>
         </div>
     </div>
-
-<script type="module" src="script.js"></script>
-</body>
-</html>
 
     <!-- Modal for Student Indications -->
     <div id="student-indications-modal" class="modal" style="display: none;">
@@ -1079,3 +1392,7 @@
         </div>
     </div>
 
+<script type="module" src="script.js"></script>
+<script src="financial.js"></script>
+</body>
+</html>

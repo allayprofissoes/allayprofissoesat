@@ -49,6 +49,22 @@
         const saveCourseDataButton = document.getElementById("save-course-data");
         const coursesMessageDiv = document.getElementById("courses-message");
 
+        // Teacher elements
+        const teacherNameInput = document.getElementById("teacher-name-input");
+        const teacherPhoneInput = document.getElementById("teacher-phone-input");
+        const teacherEmailInput = document.getElementById("teacher-email-input");
+        const teacherPasswordInput = document.getElementById("teacher-password-input");
+        const addTeacherButton = document.getElementById("add-teacher-button");
+        const teacherMessageDiv = document.getElementById("teacher-message");
+        const teachersList = document.getElementById("teachers-list");
+        const teachersMessageDiv = document.getElementById("teachers-message");
+
+        // Course teacher selection elements
+        const hasTeacherNo = document.getElementById("has-teacher-no");
+        const hasTeacherYes = document.getElementById("has-teacher-yes");
+        const teacherSelectionContainer = document.getElementById("teacher-selection-container");
+        const courseTeacherSelect = document.getElementById("course-teacher-select");
+
         // Student elements
         const studentNameInput = document.getElementById("student-name-input");
         const studentCpfInput = document.getElementById("student-cpf-input");
@@ -94,6 +110,14 @@
         const profileRemoveCourse = document.getElementById("profile-remove-course");
         const profileRemoveStudent = document.getElementById("profile-remove-student");
         const profileClose = document.getElementById("profile-close");
+        const profileViewIndications = document.getElementById("profile-view-indications");
+
+        // Student Indications Modal elements
+        const studentIndicationsModal = document.getElementById("student-indications-modal");
+        const indicationsModalStudentName = document.getElementById("indications-modal-student-name");
+        const studentIndicationsTbody = document.getElementById("student-indications-tbody");
+        const studentIndicationsMessage = document.getElementById("student-indications-message");
+        const closeIndicationsModalButton = document.getElementById("close-indications-modal");
 
         // Remove course modal elements
         // Remove course modal elements
@@ -176,12 +200,14 @@
                     notifications: "Gerenciar Notificações",
                     enrollment: "Matrícula de Aluno",
                     students: "Gerenciar Alunos",
+                    teachers: "Gerenciar Professores",
                     "indications-history": "Histórico de Matrículas",
                     materials: "Gestão de Materiais",
                     "support-settings": "Configuração Suporte",
                     settings: "Configurações",
                     analytics: "Relatórios",
-                    "privacy-policy": "Política de Privacidade"
+                    "privacy-policy": "Política de Privacidade",
+                    financial: "Receitas Financeiras"
                 };
                 
                 pageTitle.textContent = sectionTitles[targetSection];
@@ -196,6 +222,8 @@
                 // Load data for specific sections
                 if (targetSection === "students") {
                     loadStudents();
+                } else if (targetSection === "teachers") {
+                    loadTeachers();
                 } else if (targetSection === "dashboard") {
                     updateDashboardStats();
                 } else if (targetSection === "support-settings") {
@@ -208,6 +236,12 @@
                     loadPrivacyPolicy();
                 } else if (targetSection === "indications-history") {
                     loadIndications();
+                } else if (targetSection === "financial") {
+                    // Initialize financial module and load revenues
+                    if (typeof initializeFinancialModule === 'function') {
+                        initializeFinancialModule(firestore, getDocs, collection, doc, getDoc);
+                        loadRevenues();
+                    }
                 }
             });
         });
@@ -243,29 +277,77 @@
             const courseValue = parseFloat(courseValueInput.value);
             const courseWorkload = parseInt(courseWorkloadInput.value);
             const courseDescription = courseDescriptionInput.value.trim();
+            const hasTeacher = hasTeacherYes.checked;
+            const selectedTeacher = hasTeacher ? courseTeacherSelect.value : null;
 
             if (!courseName || isNaN(courseValue) || isNaN(courseWorkload) || !courseDescription) {
                 showMessage(coursesMessageDiv, "Por favor, preencha todos os campos corretamente (Nome, Valor, Carga Horária, Descrição).", "error");
                 return;
             }
 
+            if (hasTeacher && !selectedTeacher) {
+                showMessage(coursesMessageDiv, "Por favor, selecione um professor para o curso.", "error");
+                return;
+            }
+
             try {
-                await setDoc(doc(firestore, "courses", courseName), {
+                const courseData = {
                     modules: [],
                     value: courseValue,
                     workload: courseWorkload,
-                    description: courseDescription
-                });
+                    description: courseDescription,
+                    hasTeacher: hasTeacher,
+                    teacherEmail: selectedTeacher
+                };
+
+                await setDoc(doc(firestore, "courses", courseName), courseData);
                 
                 courseNameInput.value = "";
                 courseValueInput.value = "";
                 courseWorkloadInput.value = "";
                 courseDescriptionInput.value = "";
+                hasTeacherNo.checked = true;
+                hasTeacherYes.checked = false;
+                courseTeacherSelect.value = "";
+                teacherSelectionContainer.style.display = "none";
+                
                 showMessage(coursesMessageDiv, "Curso criado com sucesso!", "success");
                 loadCourses();
             } catch (error) {
                 console.error("Erro ao criar curso:", error);
                 showMessage(coursesMessageDiv, "Erro ao criar curso. Tente novamente.", "error");
+            }
+        }
+
+        // Teacher selection functions
+        function toggleTeacherSelection() {
+            if (hasTeacherYes.checked) {
+                teacherSelectionContainer.style.display = "block";
+                loadTeachersForCourseSelection();
+            } else {
+                teacherSelectionContainer.style.display = "none";
+                courseTeacherSelect.value = "";
+            }
+        }
+
+        async function loadTeachersForCourseSelection() {
+            try {
+                const teachersSnapshot = await getDocs(collection(firestore, "teachers"));
+                courseTeacherSelect.innerHTML = '<option value="">Escolha um professor...</option>';
+                
+                teachersSnapshot.forEach((doc) => {
+                    const teacher = doc.data();
+                    // Only show active teachers
+                    if (teacher.status !== "desativado") {
+                        const option = document.createElement("option");
+                        option.value = teacher.email;
+                        option.textContent = teacher.name;
+                        courseTeacherSelect.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error("Erro ao carregar professores:", error);
+                showMessage(coursesMessageDiv, "Erro ao carregar lista de professores.", "error");
             }
         }
 
@@ -484,6 +566,256 @@
                 showMessage(coursesMessageDiv, "Erro ao salvar curso. Tente novamente.", "error");
             }
         }
+
+        // Teacher management functions
+        async function addTeacher() {
+            const name = teacherNameInput.value.trim();
+            const phone = teacherPhoneInput.value.trim();
+            const email = teacherEmailInput.value.trim();
+            const password = teacherPasswordInput.value.trim();
+
+            if (!name || !phone || !email || !password) {
+                showMessage(teacherMessageDiv, "Por favor, preencha todos os campos obrigatórios.", "error");
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage(teacherMessageDiv, "A senha deve ter pelo menos 6 caracteres.", "error");
+                return;
+            }
+
+            // Validate phone
+            const cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+                showMessage(teacherMessageDiv, "Número de telefone inválido. Deve conter 10 ou 11 dígitos.", "error");
+                return;
+            }
+
+            try {
+                // Create user in Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Save teacher data to Firestore
+                await setDoc(doc(firestore, "teachers", user.email), {
+                    name: name,
+                    phone: phone,
+                    email: email,
+                    role: "teacher",
+                    registrationDate: new Date().toISOString(),
+                    status: "ativo"
+                });
+
+                // Clear form
+                clearTeacherForm();
+                
+                showMessage(teacherMessageDiv, "Professor cadastrado com sucesso!", "success");
+                loadTeachers();
+            } catch (error) {
+                console.error("Erro ao cadastrar professor:", error);
+                let errorMessage = "Erro ao cadastrar professor. Tente novamente.";
+                
+                if (error.code === "auth/email-already-in-use") {
+                    errorMessage = "Este email já está em uso.";
+                } else if (error.code === "auth/invalid-email") {
+                    errorMessage = "Email inválido.";
+                } else if (error.code === "auth/weak-password") {
+                    errorMessage = "Senha muito fraca.";
+                }
+                
+                showMessage(teacherMessageDiv, errorMessage, "error");
+            }
+        }
+
+        async function loadTeachers() {
+            try {
+                const teachersSnapshot = await getDocs(collection(firestore, "teachers"));
+                teachersList.innerHTML = "";
+                
+                if (teachersSnapshot.empty) {
+                    teachersList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: var(--spacing-xl);">Nenhum professor cadastrado.</p>';
+                    return;
+                }
+                
+                teachersSnapshot.forEach((doc) => {
+                    const teacher = doc.data();
+                    
+                    // Check if teacher is disabled
+                    const isDisabled = teacher.status === "desativado";
+                    const statusDisplay = isDisabled ? " (DESATIVADO)" : "";
+                    const teacherNameClass = isDisabled ? "student-name disabled" : "student-name";
+                    
+                    const teacherDiv = document.createElement("div");
+                    teacherDiv.className = isDisabled ? "student-item disabled" : "student-item";
+                    
+                    // Add phone to the display
+                    const phoneDisplay = teacher.phone ? ` | Tel: ${teacher.phone}` : '';
+                    
+                    teacherDiv.innerHTML = `
+                        <div class="student-info">
+                            <div class="${teacherNameClass}">${teacher.name}${statusDisplay}</div>
+                            <div class="student-email">${teacher.email}${phoneDisplay}</div>
+                            <div class="student-course">
+                                Professor | Cadastrado em: ${new Date(teacher.registrationDate).toLocaleDateString('pt-BR')}
+                            </div>
+                        </div>
+                        <div class="student-actions">
+                            <button class="btn btn-sm btn-primary" onclick="editTeacher('${teacher.email}')" ${isDisabled ? 'disabled' : ''}>
+                                <i class="fas fa-edit"></i>
+                                Editar
+                            </button>
+                            <button class="btn btn-sm ${isDisabled ? 'btn-success' : 'btn-danger'}" onclick="${isDisabled ? 'reactivateTeacher' : 'removeTeacher'}('${teacher.email}')">
+                                <i class="fas fa-${isDisabled ? 'check' : 'trash'}"></i>
+                                ${isDisabled ? 'Reativar' : 'Remover'}
+                            </button>
+                        </div>
+                    `;
+                    teachersList.appendChild(teacherDiv);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar professores:", error);
+                showMessage(teachersMessageDiv, "Erro ao carregar lista de professores.", "error");
+            }
+        }
+
+        async function removeTeacher(teacherEmail) {
+            if (confirm(`Tem certeza que deseja desativar o professor ${teacherEmail}? O professor não conseguirá mais fazer login.`)) {
+                try {
+                    // Update teacher status in Firestore
+                    await setDoc(doc(firestore, "teachers", teacherEmail), {
+                        status: "desativado",
+                        disabledAt: new Date().toISOString()
+                    }, { merge: true });
+
+                    loadTeachers();
+                    showMessage(teachersMessageDiv, "Professor desativado com sucesso!", "success");
+                } catch (error) {
+                    console.error("Erro ao desativar professor:", error);
+                    showMessage(teachersMessageDiv, "Erro ao desativar professor. Tente novamente.", "error");
+                }
+            }
+        }
+
+        async function reactivateTeacher(teacherEmail) {
+            if (confirm(`Tem certeza que deseja reativar o professor ${teacherEmail}? O professor poderá fazer login novamente.`)) {
+                try {
+                    // Update teacher status in Firestore
+                    await setDoc(doc(firestore, "teachers", teacherEmail), {
+                        status: "ativo",
+                        reactivatedAt: new Date().toISOString()
+                    }, { merge: true });
+
+                    loadTeachers();
+                    showMessage(teachersMessageDiv, "Professor reativado com sucesso!", "success");
+                } catch (error) {
+                    console.error("Erro ao reativar professor:", error);
+                    showMessage(teachersMessageDiv, "Erro ao reativar professor. Tente novamente.", "error");
+                }
+            }
+        }
+
+        async function editTeacher(teacherEmail) {
+            try {
+                const teacherDoc = await getDoc(doc(firestore, "teachers", teacherEmail));
+                if (!teacherDoc.exists()) {
+                    showMessage(teachersMessageDiv, "Professor não encontrado.", "error");
+                    return;
+                }
+
+                const teacherData = teacherDoc.data();
+                
+                // Fill form with current data
+                teacherNameInput.value = teacherData.name || "";
+                teacherPhoneInput.value = teacherData.phone || "";
+                teacherEmailInput.value = teacherData.email || "";
+                teacherPasswordInput.value = ""; // Don't show password
+                
+                // Change button text to indicate editing
+                addTeacherButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Professor';
+                addTeacherButton.onclick = () => updateTeacher(teacherEmail);
+                
+                showMessage(teacherMessageDiv, "Dados carregados para edição. Modifique os campos necessários e clique em 'Atualizar Professor'.", "warning");
+            } catch (error) {
+                console.error("Erro ao carregar dados do professor:", error);
+                showMessage(teachersMessageDiv, "Erro ao carregar dados do professor.", "error");
+            }
+        }
+
+        async function updateTeacher(originalEmail) {
+            const name = teacherNameInput.value.trim();
+            const phone = teacherPhoneInput.value.trim();
+            const email = teacherEmailInput.value.trim();
+            const password = teacherPasswordInput.value.trim();
+
+            if (!name || !phone || !email) {
+                showMessage(teacherMessageDiv, "Por favor, preencha todos os campos obrigatórios (exceto senha se não quiser alterar).", "error");
+                return;
+            }
+
+            // Validate phone
+            const cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+                showMessage(teacherMessageDiv, "Número de telefone inválido. Deve conter 10 ou 11 dígitos.", "error");
+                return;
+            }
+
+            try {
+                // Get current teacher data
+                const teacherDoc = await getDoc(doc(firestore, "teachers", originalEmail));
+                if (!teacherDoc.exists()) {
+                    showMessage(teacherMessageDiv, "Professor não encontrado.", "error");
+                    return;
+                }
+
+                const teacherData = teacherDoc.data();
+                
+                // Update teacher data in Firestore
+                await setDoc(doc(firestore, "teachers", originalEmail), {
+                    ...teacherData,
+                    name: name,
+                    phone: phone,
+                    email: email,
+                    lastUpdated: new Date().toISOString()
+                }, { merge: true });
+                
+                // Reset form and button
+                clearTeacherForm();
+                addTeacherButton.innerHTML = '<i class="fas fa-user-plus"></i> Cadastrar Professor';
+                addTeacherButton.onclick = addTeacher;
+                
+                loadTeachers();
+                showMessage(teacherMessageDiv, "Professor atualizado com sucesso!", "success");
+            } catch (error) {
+                console.error("Erro ao atualizar professor:", error);
+                showMessage(teacherMessageDiv, "Erro ao atualizar professor. Tente novamente.", "error");
+            }
+        }
+
+        function clearTeacherForm() {
+            teacherNameInput.value = "";
+            teacherPhoneInput.value = "";
+            teacherEmailInput.value = "";
+            teacherPasswordInput.value = "";
+            
+            // Reset button if it was in edit mode
+            addTeacherButton.innerHTML = '<i class="fas fa-user-plus"></i> Cadastrar Professor';
+            addTeacherButton.onclick = addTeacher;
+        }
+
+        function filterTeachers() {
+            const searchTerm = document.getElementById("teacher-search-input").value.toLowerCase();
+            const teacherItems = document.querySelectorAll("#teachers-list .student-item");
+            
+            teacherItems.forEach(item => {
+                const teacherInfo = item.querySelector(".student-info").textContent.toLowerCase();
+                if (teacherInfo.includes(searchTerm)) {
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
         // Student management functions
         async function addStudent() {
             const name = studentNameInput.value.trim();
@@ -802,6 +1134,20 @@
                     assignedCourses: assignedCourses,
                     enrollments: enrollments
                 }, { merge: true });
+
+                // Save revenue data
+                const revenueData = {
+                    courseName: selectedCourse,
+                    originalValue: (await getDoc(doc(firestore, "courses", selectedCourse))).data().value,
+                    finalValue: finalValue,
+                    enrollmentDate: new Date().toISOString(),
+                    year: new Date().getFullYear(),
+                    month: new Date().getMonth() + 1,
+                    studentEmail: currentStudentForAssignment,
+                    paymentMethod: paymentMethod,
+                    mediaSource: mediaSource
+                };
+                await setDoc(doc(collection(firestore, "revenue")), revenueData);
 
                 // If there's an indication, save the bonus to the indicator's account
                 if (hasIndication && indicatorEmail && indicationBonus > 0) {
@@ -1588,6 +1934,12 @@
         addModuleButton.addEventListener("click", addModule);
         saveCourseDataButton.addEventListener("click", saveCourseData);
         
+        addTeacherButton.addEventListener("click", addTeacher);
+
+        // Course teacher selection event listeners
+        hasTeacherNo.addEventListener("change", toggleTeacherSelection);
+        hasTeacherYes.addEventListener("change", toggleTeacherSelection);
+        
         addStudentButton.addEventListener("click", addStudent);
         
         assignCourseConfirm.addEventListener("click", assignCourse);
@@ -1607,6 +1959,7 @@
             removeStudent(currentStudentForProfile);
         });
         profileClose.addEventListener("click", closeStudentProfileModal);
+        profileViewIndications.addEventListener("click", () => openIndicationsModal(currentStudentForProfile));
         
         removeCourseConfirm.addEventListener("click", removeSelectedCourses);
         removeCourseCancel.addEventListener("click", closeRemoveCourseModal);
@@ -1628,6 +1981,7 @@
         // Auto-format inputs
         studentCpfInput.addEventListener("input", () => formatCPF(studentCpfInput));
         studentPhoneInput.addEventListener("input", () => formatPhone(studentPhoneInput));
+        teacherPhoneInput.addEventListener("input", () => formatPhone(teacherPhoneInput));
         profileStudentCpf.addEventListener("input", () => formatCPF(profileStudentCpf));
         profileStudentPhone.addEventListener("input", () => formatPhone(profileStudentPhone));
 
@@ -1649,6 +2003,12 @@
         window.removeStudent = removeStudent;
         window.reactivateStudent = reactivateStudent;
         window.loadStudents = loadStudents;
+        window.loadTeachers = loadTeachers;
+        window.editTeacher = editTeacher;
+        window.removeTeacher = removeTeacher;
+        window.reactivateTeacher = reactivateTeacher;
+        window.clearTeacherForm = clearTeacherForm;
+        window.filterTeachers = filterTeachers;
         window.loadNotifications = loadNotifications;
         window.deleteNotification = deleteNotification;
         window.clearEnrollmentForm = clearEnrollmentForm;
@@ -1970,13 +2330,283 @@
             }
         }
 
-        // Event listeners for indications
-        addIndicationButton.addEventListener("click", openAddIndicationModal);
-        saveIndicationButton.addEventListener("click", saveIndication);
-        cancelAddIndicationButton.addEventListener("click", closeAddIndicationModal);
+        closeIndicationsModalButton.addEventListener("click", closeIndicationsModal);
         
-         // Initialize the application
+
+        
+// Initialize the application
         loadCourses();
         updateDashboardStats();
 
     })();
+
+        async function openIndicationsModal(studentEmail) {
+            try {
+                const studentDoc = await getDoc(doc(firestore, "students", studentEmail));
+                if (!studentDoc.exists()) {
+                    showMessage(studentIndicationsMessage, "Aluno não encontrado.", "error");
+                    return;
+                }
+                const studentData = studentDoc.data();
+                indicationsModalStudentName.textContent = studentData.name || studentEmail;
+                studentIndicationsTbody.innerHTML = "";
+                showMessage(studentIndicationsMessage, "Carregando indicações...", "warning");
+
+                const indicationsSnapshot = await getDocs(collection(firestore, "indications"));
+                let foundIndications = [];
+
+                for (const docSnap of indicationsSnapshot.docs) {
+                    const indication = docSnap.data();
+                    if (indication.indicatorEmail === studentEmail || indication.indicatedEmail === studentEmail) {
+                        foundIndications.push(indication);
+                    }
+                }
+
+                if (foundIndications.length === 0) {
+                    studentIndicationsTbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: var(--spacing-xl);">
+                                Nenhuma indicação encontrada para este aluno.
+                            </td>
+                        </tr>
+                    `;
+                    showMessage(studentIndicationsMessage, "Nenhuma indicação encontrada para este aluno.", "info");
+                } else {
+                    for (const indication of foundIndications) {
+                        const indicatorName = await getStudentNameByEmail(indication.indicatorEmail);
+                        const indicatedName = await getStudentNameByEmail(indication.indicatedEmail);
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${indicatorName || indication.indicatorEmail}</td>
+                            <td>${indicatedName || indication.indicatedEmail}</td>
+                            <td>${indication.courseName}</td>
+                            <td>${new Date(indication.date).toLocaleDateString("pt-BR")}</td>
+                            <td>${indication.status}</td>
+                            <td>R$ ${(indication.points || 0).toFixed(2)}</td>
+                        `;
+                        studentIndicationsTbody.appendChild(row);
+                    }
+                    showMessage(studentIndicationsMessage, "Indicações carregadas com sucesso!", "success");
+                }
+
+                studentIndicationsModal.style.display = "flex";
+            } catch (error) {
+                console.error("Erro ao carregar indicações do aluno:", error);
+                showMessage(studentIndicationsMessage, "Erro ao carregar indicações do aluno. Tente novamente.", "error");
+            }
+        }
+    
+        function closeIndicationsModal() {
+            studentIndicationsModal.style.display = "none";
+            studentIndicationsTbody.innerHTML = "";
+            studentIndicationsMessage.style.display = "none";
+        }
+
+        window.openIndicationsModal = openIndicationsModal;
+        window.closeIndicationsModal = closeIndicationsModal;
+
+        // Event listeners for indications
+        addIndicationButton.addEventListener("click", openAddIndicationModal);
+        saveIndicationButton.addEventListener("click", saveIndication);
+        cancelAddIndicationButton.addEventListener("click", closeAddIndicationModal);
+
+        // ===== TABS FUNCTIONALITY =====
+        function initializeTabs() {
+            console.log('🔧 Inicializando sistema de abas...');
+            
+            try {
+                const tabButtons = document.querySelectorAll('.tab-button');
+                const tabContents = document.querySelectorAll('.tab-content');
+                
+                console.log('📋 Elementos encontrados:');
+                console.log('   - Botões de aba:', tabButtons.length);
+                console.log('   - Conteúdos de aba:', tabContents.length);
+
+                if (tabButtons.length === 0) {
+                    console.error('❌ Nenhum botão de aba encontrado!');
+                    return;
+                }
+
+                if (tabContents.length === 0) {
+                    console.error('❌ Nenhum conteúdo de aba encontrado!');
+                    return;
+                }
+
+                // Adicionar event listeners de forma mais simples
+                for (let i = 0; i < tabButtons.length; i++) {
+                    const button = tabButtons[i];
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    console.log(`   - Configurando botão: data-tab="${targetTab}"`);
+                    
+                    // Usar onclick em vez de addEventListener para maior compatibilidade
+                    button.onclick = function(e) {
+                        if (e && e.preventDefault) {
+                            e.preventDefault();
+                        }
+                        
+                        console.log(`🖱️ Clicou na aba: ${targetTab}`);
+                        
+                        // Remover classe active de todos os botões
+                        for (let j = 0; j < tabButtons.length; j++) {
+                            tabButtons[j].classList.remove('active');
+                        }
+                        
+                        // Esconder todos os conteúdos
+                        for (let k = 0; k < tabContents.length; k++) {
+                            tabContents[k].classList.remove('active');
+                            tabContents[k].style.display = 'none';
+                        }
+                        
+                        // Ativar botão clicado
+                        button.classList.add('active');
+                        
+                        // Mostrar conteúdo correspondente
+                        const targetContent = document.getElementById(targetTab);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                            targetContent.style.display = 'block';
+                            console.log(`✅ Aba "${targetTab}" ativada com sucesso!`);
+                        } else {
+                            console.error(`❌ Conteúdo da aba "${targetTab}" não encontrado!`);
+                        }
+                        
+                        return false; // Prevenir comportamento padrão
+                    };
+                }
+
+                console.log('🎉 Sistema de abas inicializado com sucesso!');
+                
+            } catch (error) {
+                console.error('❌ Erro ao inicializar abas:', error);
+            }
+        }
+
+        // Clear course form function
+        function clearCourseForm() {
+            courseNameInput.value = "";
+            courseValueInput.value = "";
+            courseWorkloadInput.value = "";
+            courseDescriptionInput.value = "";
+            hasTeacherNo.checked = true;
+            hasTeacherYes.checked = false;
+            courseTeacherSelect.value = "";
+            teacherSelectionContainer.style.display = "none";
+            
+            // Remove any validation classes
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('success', 'error');
+            });
+            
+            showMessage(coursesMessageDiv, "Formulário limpo com sucesso!", "success");
+        }
+
+        // Enhanced form validation
+        function validateCourseForm() {
+            let isValid = true;
+            const requiredFields = [
+                { element: courseNameInput, name: "Nome do Curso" },
+                { element: courseValueInput, name: "Valor" },
+                { element: courseWorkloadInput, name: "Carga Horária" },
+                { element: courseDescriptionInput, name: "Descrição" }
+            ];
+
+            // Clear previous validation states
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('success', 'error');
+            });
+
+            // Validate required fields
+            requiredFields.forEach(field => {
+                const formGroup = field.element.closest('.form-group');
+                if (!field.element.value.trim()) {
+                    formGroup.classList.add('error');
+                    isValid = false;
+                } else {
+                    formGroup.classList.add('success');
+                }
+            });
+
+            // Validate teacher selection if required
+            if (hasTeacherYes.checked) {
+                const teacherFormGroup = courseTeacherSelect.closest('.form-group');
+                if (!courseTeacherSelect.value) {
+                    teacherFormGroup.classList.add('error');
+                    isValid = false;
+                } else {
+                    teacherFormGroup.classList.add('success');
+                }
+            }
+
+            return isValid;
+        }
+
+        // Enhanced addCourse function with validation
+        const originalAddCourse = addCourse;
+        addCourse = async function() {
+            // Add loading state
+            const addButton = document.getElementById('add-course-button');
+            addButton.classList.add('loading');
+            addButton.disabled = true;
+
+            try {
+                if (!validateCourseForm()) {
+                    showMessage(coursesMessageDiv, "Por favor, preencha todos os campos obrigatórios corretamente.", "error");
+                    return;
+                }
+
+                await originalAddCourse();
+                
+                // Clear form after successful creation
+                clearCourseForm();
+                
+                // Switch to management tab to see the created course
+                setTimeout(() => {
+                    document.querySelector('[data-tab="course-management"]').click();
+                }, 1000);
+
+            } finally {
+                // Remove loading state
+                addButton.classList.remove('loading');
+                addButton.disabled = false;
+            }
+        };
+
+        // Make clearCourseForm globally available
+        window.clearCourseForm = clearCourseForm;
+
+        // Initialize tabs - Compatible with all browsers
+        function initTabsWhenReady() {
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                // DOM is ready, initialize tabs
+                setTimeout(initializeTabs, 100);
+            } else {
+                // DOM not ready yet, try different approaches
+                if (document.addEventListener) {
+                    // Modern browsers
+                    document.addEventListener('DOMContentLoaded', initializeTabs);
+                } else if (document.attachEvent) {
+                    // IE8 and older
+                    document.attachEvent('onreadystatechange', function() {
+                        if (document.readyState === 'complete') {
+                            initializeTabs();
+                        }
+                    });
+                } else {
+                    // Fallback for very old browsers
+                    window.onload = initializeTabs;
+                }
+            }
+        }
+        
+        // Execute initialization
+        initTabsWhenReady();
+
+
+        // Initialize the application
+        loadCourses();
+        updateDashboardStats();
+
+    ;
+
+

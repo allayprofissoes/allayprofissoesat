@@ -1,0 +1,224 @@
+/* Financial Module Styles */
+
+/* Payment Method Badges */
+.payment-method-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.payment-pix {
+    background-color: #00d4aa;
+    color: white;
+}
+
+.payment-cash {
+    background-color: #28a745;
+    color: white;
+}
+
+.payment-card {
+    background-color: #007bff;
+    color: white;
+}
+
+.payment-default {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Media Source Badges */
+.media-source-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+.media-facebook {
+    background-color: #1877f2;
+    color: white;
+}
+
+.media-instagram {
+    background-color: #e4405f;
+    color: white;
+}
+
+.media-google {
+    background-color: #4285f4;
+    color: white;
+}
+
+.media-referral {
+    background-color: #ff6b35;
+    color: white;
+}
+
+.media-default {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Financial Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-icon {
+    font-size: 2.5em;
+    color: var(--accent-blue);
+    margin-bottom: var(--spacing-md);
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Financial Table */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.data-table th {
+    background: var(--primary-bg);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: var(--spacing-md);
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.data-table tr:hover {
+    background: var(--tertiary-bg);
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Detailed Stats */
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-item .stat-label {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.stat-item .stat-value {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-table {
+        font-size: var(--font-size-sm);
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: var(--spacing-sm);
+    }
+    
+    .stat-card {
+        padding: var(--spacing-md);
+    }
+    
+    .stat-value {
+        font-size: 1.5em;
+    }
+}
+
+/* Loading States */
+.loading-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: var(--radius-sm);
+    height: 20px;
+    margin: var(--spacing-xs) 0;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Success/Error States */
+.revenue-success {
+    border-left: 4px solid var(--success-color);
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.revenue-warning {
+    border-left: 4px solid var(--warning-color);
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.revenue-error {
+    border-left: 4px solid var(--error-color);
+    background: rgba(220, 53, 69, 0.1);
+}
+
