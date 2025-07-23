@@ -13,7 +13,7 @@
         // Initialize Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, listAll, deleteObject, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
         
         const app = initializeApp(firebaseConfig);
@@ -207,7 +207,9 @@
                     settings: "Configurações",
                     analytics: "Relatórios",
                     "privacy-policy": "Política de Privacidade",
-                    financial: "Receitas Financeiras"
+                    financial: "Receitas Financeiras",
+                    "financial-dashboard": "Dashboard Financeiro",
+                    costs: "Gestão de Custos"
                 };
                 
                 pageTitle.textContent = sectionTitles[targetSection];
@@ -237,10 +239,21 @@
                 } else if (targetSection === "indications-history") {
                     loadIndications();
                 } else if (targetSection === "financial") {
-                    // Initialize financial module and load revenues
+                    // Initialize financial module
                     if (typeof initializeFinancialModule === 'function') {
-                        initializeFinancialModule(firestore, getDocs, collection, doc, getDoc);
+                        initializeFinancialModule(firestore, getDocs, collection, doc, getDoc, targetSection);
                         loadRevenues();
+                    }
+                } else if (targetSection === "financial-dashboard") {
+                    // Initialize financial dashboard
+                    if (typeof initializeFinancialModule === 'function') {
+                        initializeFinancialModule(firestore, getDocs, collection, doc, getDoc, targetSection);
+                    }
+                } else if (targetSection === "costs") {
+                    // Initialize costs module
+                    if (typeof initializeCostsModule === 'function') {
+                        initializeCostsModule(firestore, getDocs, collection, doc, getDoc, addDoc, deleteDoc);
+                        loadCosts();
                     }
                 }
             });

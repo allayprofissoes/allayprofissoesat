@@ -16,7 +16,10 @@
     <!-- External CSS -->
     <link rel="stylesheet" href="style_refatorado.css">
     <link rel="stylesheet" href="financial-styles.css">
+    <link rel="stylesheet" href="costs-styles.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Chart.js for dashboard charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
@@ -105,16 +108,21 @@
                     <h3 class="nav-section-title">Financeiro</h3>
                     <ul class="nav-list">
                         <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="financial-dashboard">
+                                <i class="fas fa-chart-pie"></i>
+                                Dashboard Financeiro
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="#" class="nav-link" data-section="financial">
                                 <i class="fas fa-dollar-sign"></i>
                                 Receitas Financeira
                             </a>
                         </li>
-
-
-                          <a href="#" class="nav-link active" data-section="mudar">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="costs">
                                 <i class="fas fa-money-bill-wave"></i>
-                                Despesas
+                                Custos
                             </a>
                         </li>
                         <li class="nav-item">
@@ -932,6 +940,151 @@
                     </div>
                 </div>
 
+                <!-- Financial Dashboard Section -->
+                <div id="financial-dashboard" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-pie"></i>
+                                Dashboard Financeiro
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="loadFinancialDashboard()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Dashboard
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Resumo Rápido -->
+                        <div class="stats-grid" style="margin-bottom: var(--spacing-lg);">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="stat-value" id="dashboard-monthly-revenue">R$ 0,00</div>
+                                <div class="stat-label">💰 Receita do Mês</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-money-bill-transfer"></i>
+                                </div>
+                                <div class="stat-value" id="dashboard-monthly-expenses">R$ 0,00</div>
+                                <div class="stat-label">📉 Despesas do Mês</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-value" id="dashboard-net-profit">R$ 0,00</div>
+                                <div class="stat-label">📊 Lucro Líquido</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="stat-value" id="dashboard-comparison">0%</div>
+                                <div class="stat-label">📅 Comparativo Mensal</div>
+                            </div>
+                        </div>
+
+                        <!-- Seletor de Mês -->
+                        <div style="margin-bottom: var(--spacing-lg); padding: var(--spacing-md); background: var(--tertiary-bg); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-calendar-alt" style="color: var(--accent-blue);"></i>
+                                Filtro por Período
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Mês</label>
+                                    <select class="form-select" id="dashboard-month-select" onchange="updateDashboardByMonth()">
+                                        <option value="1">Janeiro</option>
+                                        <option value="2">Fevereiro</option>
+                                        <option value="3">Março</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Maio</option>
+                                        <option value="6">Junho</option>
+                                        <option value="7">Julho</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Setembro</option>
+                                        <option value="10">Outubro</option>
+                                        <option value="11">Novembro</option>
+                                        <option value="12">Dezembro</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Ano</label>
+                                    <select class="form-select" id="dashboard-year-select" onchange="updateDashboardByMonth()">
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráficos -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                            <!-- Gráfico de Barras -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-chart-bar"></i>
+                                        📈 Receita vs. Despesa (Mês a Mês)
+                                    </h4>
+                                </div>
+                                <div style="height: 300px; display: flex; align-items: center; justify-content: center;">
+                                    <canvas id="revenue-expense-chart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Gráfico de Pizza -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-chart-pie"></i>
+                                        🟢 Distribuição das Despesas
+                                    </h4>
+                                </div>
+                                <div style="height: 300px; display: flex; align-items: center; justify-content: center;">
+                                    <canvas id="expense-distribution-chart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabela Resumo Mensal -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">
+                                    <i class="fas fa-table"></i>
+                                    Resumo Mensal Detalhado
+                                </h4>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Mês</th>
+                                            <th>Receitas</th>
+                                            <th>Despesas</th>
+                                            <th>Lucro Líquido</th>
+                                            <th>Margem (%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="monthly-summary-table">
+                                        <!-- Dados serão preenchidos dinamicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div id="financial-dashboard-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
                 <!-- Financial Section -->
                 <div id="financial" class="section">
                     <div class="card">
@@ -1031,6 +1184,157 @@
                         </div>
                         
                         <div id="financial-message" class="message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Costs Section -->
+                <div id="costs" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-money-bill-wave"></i>
+                                Gestão de Custos
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="loadCosts()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Custos
+                                </button>
+                                <button class="btn btn-primary" onclick="exportCostData()">
+                                    <i class="fas fa-download"></i>
+                                    Exportar Dados
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Cost Stats Cards -->
+                        <div class="stats-grid" style="margin-bottom: var(--spacing-lg);">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-money-bill-transfer"></i>
+                                </div>
+                                <div class="stat-value" id="total-cost">R$ 0,00</div>
+                                <div class="stat-label">Custo Total</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="stat-value" id="daily-cost">R$ 0,00</div>
+                                <div class="stat-label">Custo do Dia</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-month"></i>
+                                </div>
+                                <div class="stat-value" id="monthly-cost">R$ 0,00</div>
+                                <div class="stat-label">Custo do Mês</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-days"></i>
+                                </div>
+                                <div class="stat-value" id="annual-cost">R$ 0,00</div>
+                                <div class="stat-label">Custo do Ano</div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Options -->
+                        <div style="margin-bottom: var(--spacing-lg); padding: var(--spacing-md); background: var(--tertiary-bg); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-filter" style="color: var(--accent-blue);"></i>
+                                Filtros
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Período</label>
+                                    <select class="form-select" onchange="filterCostsByPeriod(this.value)">
+                                        <option value="all">Todos os períodos</option>
+                                        <option value="today">Hoje</option>
+                                        <option value="week">Esta semana</option>
+                                        <option value="month">Este mês</option>
+                                        <option value="year">Este ano</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Categoria</label>
+                                    <select class="form-select">
+                                        <option value="all">Todas as categorias</option>
+                                        <option value="salarios">Salários</option>
+                                        <option value="aluguel">Aluguel</option>
+                                        <option value="marketing">Marketing</option>
+                                        <option value="infraestrutura">Infraestrutura</option>
+                                        <option value="outros">Outros</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Costs List -->
+                        <div id="costs-list" style="min-height: 300px;">
+                            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-muted);">
+                                <i class="fas fa-chart-pie" style="font-size: 3em; margin-bottom: var(--spacing-md); opacity: 0.5;"></i>
+                                <h3 style="margin-bottom: var(--spacing-sm);">Carregando Custos...</h3>
+                                <p>Clique em "Atualizar Custos" para carregar os dados financeiros.</p>
+                            </div>
+                        </div>
+
+                        <!-- Add Cost Form -->
+                        <div style="margin-top: var(--spacing-lg); padding: var(--spacing-lg); background: var(--tertiary-bg); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-sm);">
+                                <i class="fas fa-plus-circle" style="color: var(--accent-blue);"></i>
+                                Adicionar Novo Custo
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="cost-description">Descrição do Custo *</label>
+                                    <input type="text" id="cost-description" class="form-input" placeholder="Ex: Aluguel do escritório" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="cost-value">Valor (R$) *</label>
+                                    <input type="number" id="cost-value" class="form-input" placeholder="Ex: 1500.00" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="cost-category">Categoria *</label>
+                                    <select id="cost-category" class="form-select" required>
+                                        <option value="">Selecione uma categoria...</option>
+                                        <option value="salarios">Salários</option>
+                                        <option value="aluguel">Aluguel</option>
+                                        <option value="marketing">Marketing</option>
+                                        <option value="infraestrutura">Infraestrutura</option>
+                                        <option value="outros">Outros</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="cost-date">Data do Custo *</label>
+                                    <input type="date" id="cost-date" class="form-input" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="cost-notes">Observações</label>
+                                <textarea id="cost-notes" class="form-input" placeholder="Observações adicionais sobre este custo..." rows="3"></textarea>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                                <button type="button" class="btn btn-secondary" onclick="clearCostForm()">
+                                    <i class="fas fa-times"></i>
+                                    Limpar
+                                </button>
+                                <button type="button" class="btn btn-success" onclick="addCost()">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Adicionar Custo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Stats -->
+                        <div id="cost-stats-details" style="margin-top: var(--spacing-lg);">
+                            <!-- Detailed statistics will be populated by JavaScript -->
+                        </div>
+                        
+                        <div id="costs-message" class="message" style="display: none;"></div>
                     </div>
                 </div>
             </main>
@@ -1251,13 +1555,13 @@
             </div>
             <div class="form-group">
                 <label class="form-label" for="indicator-student-search">Aluno Indicador</label>
-                <input type="text" id="indicator-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication("indicator")">
+                <input type="text" id="indicator-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication">
                 <div id="indicator-student-results" class="search-results-list" style="display: none;"></div>
                 <input type="hidden" id="selected-indicator-email">
             </div>
             <div class="form-group">
                 <label class="form-label" for="indicated-student-search">Aluno Indicado</label>
-                <input type="text" id="indicated-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication("indicated")">
+                <input type="text" id="indicated-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication">
                 <div id="indicated-student-results" class="search-results-list" style="display: none;"></div>
                 <input type="hidden" id="selected-indicated-email">
             </div>
@@ -1394,5 +1698,6 @@
 
 <script type="module" src="script.js"></script>
 <script src="financial.js"></script>
+<script src="costs.js"></script>
 </body>
 </html>

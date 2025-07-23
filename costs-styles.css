@@ -1,0 +1,413 @@
+/* Costs Module Styles */
+
+/* Category Badges */
+.category-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.category-salarios {
+    background-color: #dc3545;
+    color: white;
+}
+
+.category-aluguel {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.category-marketing {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.category-infraestrutura {
+    background-color: #20c997;
+    color: white;
+}
+
+.category-outros {
+    background-color: #6c757d;
+    color: white;
+}
+
+.category-default {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Cost Stats Cards */
+.cost-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.cost-stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 4px solid var(--error-color);
+}
+
+.cost-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.cost-stat-icon {
+    font-size: 2.5em;
+    color: var(--error-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.cost-stat-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--error-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.cost-stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Cost Form Styles */
+.cost-form-container {
+    background: var(--tertiary-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+}
+
+.cost-form-title {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.cost-form-title i {
+    color: var(--accent-blue);
+}
+
+/* Cost Table Styles */
+.costs-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.costs-table th {
+    background: var(--primary-bg);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: var(--spacing-md);
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.costs-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.costs-table tr:hover {
+    background: var(--tertiary-bg);
+}
+
+.costs-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Cost Value Styling */
+.cost-value {
+    font-weight: 600;
+    color: var(--error-color);
+    font-size: 1.1em;
+}
+
+/* Filter Section */
+.cost-filter-section {
+    background: var(--tertiary-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+}
+
+.cost-filter-title {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.cost-filter-title i {
+    color: var(--accent-blue);
+}
+
+/* Cost Actions */
+.cost-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+.cost-action-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: var(--font-size-xs);
+    transition: all 0.2s ease;
+}
+
+.cost-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.cost-delete-btn {
+    background: var(--error-color);
+    color: white;
+}
+
+.cost-delete-btn:hover {
+    background: var(--error-color-dark);
+}
+
+/* Empty State */
+.cost-empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-muted);
+}
+
+.cost-empty-state i {
+    font-size: 3em;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+    color: var(--error-color);
+}
+
+.cost-empty-state h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+/* Detailed Stats */
+.cost-detailed-stats {
+    background: var(--tertiary-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+}
+
+.cost-stats-title {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.cost-stats-title i {
+    color: var(--accent-blue);
+}
+
+.cost-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cost-stat-item:last-child {
+    border-bottom: none;
+}
+
+.cost-stat-item .stat-label {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.cost-stat-item .stat-value {
+    color: var(--error-color);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+}
+
+/* Loading States */
+.cost-loading-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: var(--radius-sm);
+    height: 20px;
+    margin: var(--spacing-xs) 0;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Success/Error States for Costs */
+.cost-success {
+    border-left: 4px solid var(--success-color);
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.cost-warning {
+    border-left: 4px solid var(--warning-color);
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.cost-error {
+    border-left: 4px solid var(--error-color);
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Responsive Design for Costs */
+@media (max-width: 768px) {
+    .cost-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .costs-table {
+        font-size: var(--font-size-sm);
+    }
+    
+    .costs-table th,
+    .costs-table td {
+        padding: var(--spacing-sm);
+    }
+    
+    .cost-stat-card {
+        padding: var(--spacing-md);
+    }
+    
+    .cost-stat-value {
+        font-size: 1.5em;
+    }
+    
+    .cost-actions {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .cost-form-container {
+        padding: var(--spacing-md);
+    }
+}
+
+/* Cost Dashboard Specific Styles */
+.cost-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.cost-dashboard-title {
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.cost-dashboard-title i {
+    color: var(--error-color);
+}
+
+.cost-dashboard-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+/* Cost Period Selector */
+.cost-period-selector {
+    display: flex;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.cost-period-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-right: 1px solid var(--border-color);
+}
+
+.cost-period-btn:last-child {
+    border-right: none;
+}
+
+.cost-period-btn:hover {
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+}
+
+.cost-period-btn.active {
+    background: var(--error-color);
+    color: white;
+}
+
+/* Cost Chart Container */
+.cost-chart-container {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+    border: 1px solid var(--border-color);
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cost-chart-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.cost-chart-placeholder i {
+    font-size: 3em;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+    color: var(--error-color);
+}
+

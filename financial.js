@@ -5,14 +5,21 @@
 let firestore, getDocs, collection, doc, getDoc;
 
 // Função para inicializar as dependências do Firebase
-function initializeFinancialModule(firestoreInstance, getDocsFunction, collectionFunction, docFunction, getDocFunction) {
+function initializeFinancialModule(firestoreInstance, getDocsFunction, collectionFunction, docFunction, getDocFunction, currentSection) {
     firestore = firestoreInstance;
     getDocs = getDocsFunction;
     collection = collectionFunction;
     doc = docFunction;
     getDoc = getDocFunction;
     
-    console.log('📊 Módulo Financeiro inicializado com sucesso!');
+    console.log("DEBUG: initializeFinancialModule executada para seção: " + currentSection);
+
+    // Se a seção atual for o dashboard financeiro, carrega o dashboard
+    if (currentSection === "financial-dashboard") {
+        loadFinancialDashboard();
+    }
+    
+    console.log("DEBUG: Módulo Financeiro inicializado com sucesso!");
 }
 
 // Função principal para carregar receitas
@@ -328,4 +335,417 @@ window.filterRevenuesByPeriod = filterRevenuesByPeriod;
 window.exportRevenueData = exportRevenueData;
 
 console.log('💰 Módulo Financeiro carregado com sucesso!');
+
+
+
+// ===== DASHBOARD FINANCEIRO =====
+
+// Variáveis globais para os gráficos
+let revenueExpenseChart = null;
+let expenseDistributionChart = null;
+
+// Função principal para carregar o dashboard financeiro
+async function loadFinancialDashboard() {
+    console.log("DEBUG: loadFinancialDashboard executada.");
+    try {
+        console.log('📊 Carregando dashboard financeiro...');
+        
+        // Mostrar mensagem de carregamento
+        showDashboardMessage("Carregando dashboard financeiro...", "info");
+        
+        // Definir mês e ano atual como padrão
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentYear = currentDate.getFullYear();
+        
+        // Definir valores padrão nos seletores
+        document.getElementById('dashboard-month-select').value = currentMonth;
+        document.getElementById('dashboard-year-select').value = currentYear;
+        
+        // Carregar dados do dashboard
+        await updateDashboardByMonth();
+        
+        showDashboardMessage("Dashboard carregado com sucesso!", "success");
+        
+    } catch (error) {
+        console.error('Erro ao carregar dashboard financeiro:', error);
+        showDashboardMessage("Erro ao carregar dashboard financeiro: " + error.message, "error");
+    }
+}
+
+// Função para atualizar dashboard por mês selecionado
+async function updateDashboardByMonth() {
+    try {
+        const monthSelect = document.getElementById('dashboard-month-select');
+        const yearSelect = document.getElementById('dashboard-year-select');
+        
+        if (!monthSelect || !yearSelect) {
+            console.error("Seletores de mês/ano não encontrados!");
+            showDashboardMessage("Erro: Seletores de mês/ano não encontrados.", "error");
+            return;
+        }
+        
+        const selectedMonth = parseInt(monthSelect.value);
+        const selectedYear = parseInt(yearSelect.value);
+        
+        console.log(`📅 Atualizando dashboard para ${selectedMonth}/${selectedYear}`);
+        
+        // Carregar receitas e custos
+        const [revenues, costs] = await Promise.all([
+            loadRevenuesData(),
+            loadCostsData()
+        ]);
+        
+        // Filtrar dados por mês/ano
+        const monthlyRevenues = filterDataByMonth(revenues, selectedMonth, selectedYear);
+        const monthlyCosts = filterDataByMonth(costs, selectedMonth, selectedYear);
+        
+        // Calcular estatísticas
+        const stats = calculateMonthlyStats(monthlyRevenues, monthlyCosts, selectedMonth, selectedYear);
+        
+        // Atualizar cards de resumo
+        updateSummaryCards(stats);
+        
+        // Atualizar gráficos
+        await updateCharts(revenues, costs, selectedYear);
+        
+        // Atualizar tabela resumo mensal
+        updateMonthlySummaryTable(revenues, costs, selectedYear);
+        
+    } catch (error) {
+        console.error('Erro ao atualizar dashboard:', error);
+        showDashboardMessage("Erro ao atualizar dashboard: " + error.message, "error");
+    }
+}
+
+// Função para carregar dados de receitas
+async function loadRevenuesData() {
+    try {
+        const revenuesSnapshot = await getDocs(collection(firestore, "revenue"));
+        const revenues = [];
+        
+        revenuesSnapshot.forEach((doc) => {
+            const data = doc.data();
+            revenues.push({
+                ...data,
+                id: doc.id,
+                date: new Date(data.enrollmentDate),
+                value: parseFloat(data.finalValue) || 0
+            });
+        });
+        
+        console.log("DEBUG: Receitas carregadas:", revenues);
+        return revenues;
+    } catch (error) {
+        console.error("Erro ao carregar receitas:", error);
+        return [];
+    }
+}
+
+// Função para carregar dados de custos
+async function loadCostsData() {
+    try {
+        const costsSnapshot = await getDocs(collection(firestore, "costs"));
+        const costs = [];
+        
+        costsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            costs.push({
+                ...data,
+                id: doc.id,
+                date: new Date(data.date),
+                value: parseFloat(data.value) || 0
+            });
+        });
+        console.log("DEBUG: Custos carregados:", costs);
+        return costs;
+    } catch (error) {
+        console.error('Erro ao carregar custos:', error);
+        return [];
+    }
+}
+
+// Função para filtrar dados por mês e ano
+function filterDataByMonth(data, month, year) {
+    return data.filter(item => {
+        const itemDate = item.date;
+        return itemDate.getMonth() + 1 === month && itemDate.getFullYear() === year;
+    });
+}
+
+// Função para calcular estatísticas mensais
+function calculateMonthlyStats(revenues, costs, month, year) {
+    const totalRevenue = revenues.reduce((sum, item) => sum + item.value, 0);
+    const totalCosts = costs.reduce((sum, item) => sum + item.value, 0);
+    const netProfit = totalRevenue - totalCosts;
+    
+    // Calcular comparativo com mês anterior
+    const previousMonth = month === 1 ? 12 : month - 1;
+    const previousYear = month === 1 ? year - 1 : year;
+    
+    // Para o comparativo, precisaríamos dos dados do mês anterior
+    // Por simplicidade, vamos calcular uma variação baseada nos dados atuais
+    const comparison = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : 0;
+    
+    return {
+        totalRevenue,
+        totalCosts,
+        netProfit,
+        comparison: `${comparison}%`
+    };
+}
+
+// Função para atualizar os cards de resumo
+function updateSummaryCards(stats) {
+    console.log("DEBUG: Atualizando cards de resumo com stats:", stats);
+    
+    const monthlyRevenueEl = document.getElementById('dashboard-monthly-revenue');
+    const monthlyExpensesEl = document.getElementById('dashboard-monthly-expenses');
+    const netProfitEl = document.getElementById('dashboard-net-profit');
+    const comparisonEl = document.getElementById('dashboard-comparison');
+    
+    if (monthlyRevenueEl) {
+        monthlyRevenueEl.textContent = formatCurrency(stats.totalRevenue);
+    } else {
+        console.error("Elemento 'dashboard-monthly-revenue' não encontrado!");
+    }
+    
+    if (monthlyExpensesEl) {
+        monthlyExpensesEl.textContent = formatCurrency(stats.totalCosts);
+    } else {
+        console.error("Elemento 'dashboard-monthly-expenses' não encontrado!");
+    }
+    
+    if (netProfitEl) {
+        netProfitEl.textContent = formatCurrency(stats.netProfit);
+        // Colorir o lucro líquido baseado no valor
+        if (stats.netProfit > 0) {
+            netProfitEl.style.color = '#10b981'; // Verde
+        } else if (stats.netProfit < 0) {
+            netProfitEl.style.color = '#ef4444'; // Vermelho
+        } else {
+            netProfitEl.style.color = '#6b7280'; // Cinza
+        }
+    } else {
+        console.error("Elemento 'dashboard-net-profit' não encontrado!");
+    }
+    
+    if (comparisonEl) {
+        comparisonEl.textContent = stats.comparison;
+    } else {
+        console.error("Elemento 'dashboard-comparison' não encontrado!");
+    }
+}
+
+// Função para atualizar gráficos
+async function updateCharts(revenues, costs, year) {
+    // Preparar dados mensais para o ano
+    const monthlyData = [];
+    const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    
+    for (let month = 1; month <= 12; month++) {
+        const monthRevenues = filterDataByMonth(revenues, month, year);
+        const monthCosts = filterDataByMonth(costs, month, year);
+        
+        const totalRevenue = monthRevenues.reduce((sum, item) => sum + item.value, 0);
+        const totalCosts = monthCosts.reduce((sum, item) => sum + item.value, 0);
+        
+        monthlyData.push({
+            month: monthNames[month - 1],
+            revenue: totalRevenue,
+            costs: totalCosts
+        });
+    }
+    
+    // Atualizar gráfico de barras (Receita vs Despesa)
+    updateRevenueExpenseChart(monthlyData);
+    
+    // Preparar dados para gráfico de pizza (distribuição de despesas por categoria)
+    const expensesByCategory = {};
+    costs.forEach(cost => {
+        const category = cost.category || 'Outros';
+        expensesByCategory[category] = (expensesByCategory[category] || 0) + cost.value;
+    });
+    
+    updateExpenseDistributionChart(expensesByCategory);
+}
+
+// Função para atualizar gráfico de barras
+function updateRevenueExpenseChart(data) {
+    const chartCanvas = document.getElementById('revenue-expense-chart');
+    if (!chartCanvas) {
+        console.error("Canvas 'revenue-expense-chart' não encontrado!");
+        return;
+    }
+    
+    const ctx = chartCanvas.getContext('2d');
+    
+    // Destruir gráfico anterior se existir
+    if (revenueExpenseChart) {
+        revenueExpenseChart.destroy();
+    }
+    
+    revenueExpenseChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(item => item.month),
+            datasets: [
+                {
+                    label: 'Receitas',
+                    data: data.map(item => item.revenue),
+                    backgroundColor: '#10b981',
+                    borderColor: '#059669',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Despesas',
+                    data: data.map(item => item.costs),
+                    backgroundColor: '#ef4444',
+                    borderColor: '#dc2626',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'R$ ' + value.toLocaleString('pt-BR');
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': R$ ' + context.parsed.y.toLocaleString('pt-BR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Função para atualizar gráfico de pizza
+function updateExpenseDistributionChart(expensesByCategory) {
+    const chartCanvas = document.getElementById('expense-distribution-chart');
+    if (!chartCanvas) {
+        console.error("Canvas 'expense-distribution-chart' não encontrado!");
+        return;
+    }
+    
+    const ctx = chartCanvas.getContext('2d');
+    
+    // Destruir gráfico anterior se existir
+    if (expenseDistributionChart) {
+        expenseDistributionChart.destroy();
+    }
+    
+    const categories = Object.keys(expensesByCategory);
+    const values = Object.values(expensesByCategory);
+    
+    // Cores para as categorias
+    const colors = [
+        '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+        '#06b6d4', '#84cc16', '#f97316', '#ec4899', '#6b7280'
+    ];
+    
+    expenseDistributionChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: categories,
+            datasets: [{
+                data: values,
+                backgroundColor: colors.slice(0, categories.length),
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            return context.label + ': R$ ' + context.parsed.toLocaleString('pt-BR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }) + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Função para atualizar tabela resumo mensal
+function updateMonthlySummaryTable(revenues, costs, year) {
+    const tbody = document.getElementById('monthly-summary-table');
+    if (!tbody) {
+        console.error("Tabela 'monthly-summary-table' não encontrada!");
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    
+    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    
+    for (let month = 1; month <= 12; month++) {
+        const monthRevenues = filterDataByMonth(revenues, month, year);
+        const monthCosts = filterDataByMonth(costs, month, year);
+        
+        const totalRevenue = monthRevenues.reduce((sum, item) => sum + item.value, 0);
+        const totalCosts = monthCosts.reduce((sum, item) => sum + item.value, 0);
+        const netProfit = totalRevenue - totalCosts;
+        const margin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : 0;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${monthNames[month - 1]}</td>
+            <td style="color: #10b981; font-weight: bold;">${formatCurrency(totalRevenue)}</td>
+            <td style="color: #ef4444; font-weight: bold;">${formatCurrency(totalCosts)}</td>
+            <td style="color: ${netProfit >= 0 ? '#10b981' : '#ef4444'}; font-weight: bold;">${formatCurrency(netProfit)}</td>
+            <td style="color: ${margin >= 0 ? '#10b981' : '#ef4444'}; font-weight: bold;">${margin}%</td>
+        `;
+        
+        tbody.appendChild(row);
+    }
+}
+
+// Função para mostrar mensagens do dashboard
+function showDashboardMessage(message, type) {
+    const messageElement = document.getElementById('financial-dashboard-message');
+    if (messageElement) {
+        messageElement.textContent = message;
+        messageElement.className = `message ${type}`;
+        messageElement.style.display = 'block';
+        
+        // Ocultar mensagem após 3 segundos
+        setTimeout(() => {
+            messageElement.style.display = 'none';
+        }, 3000);
+    }
+}
+
+// Função para formatar moeda
+function formatCurrency(value) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(value);
+}
 
