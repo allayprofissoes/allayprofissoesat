@@ -1,0 +1,139 @@
+/* Estilos para a seção de Notificação de Afiliação */
+#affiliation-notifications {
+    /* Estilos gerais para a seção */
+}
+
+#affiliation-notifications .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+#affiliation-notifications .card-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+#affiliation-notifications .card-title i {
+    color: var(--accent-blue);
+}
+
+#affiliation-notifications .filter-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+#affiliation-notifications .filter-buttons .btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+#affiliation-notifications .notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+#affiliation-notifications .notification-item {
+    background: var(--tertiary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    transition: all 0.2s ease;
+}
+
+#affiliation-notifications .notification-item:hover {
+    border-color: var(--accent-blue);
+    transform: translateX(4px);
+}
+
+#affiliation-notifications .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#affiliation-notifications .notification-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+#affiliation-notifications .notification-status {
+    font-size: var(--font-size-sm);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+}
+
+#affiliation-notifications .status-pending {
+    background: var(--warning-yellow);
+    color: var(--primary-bg);
+}
+
+#affiliation-notifications .status-approved {
+    background: var(--success-green);
+    color: white;
+}
+
+#affiliation-notifications .status-rejected {
+    background: var(--error-red);
+    color: white;
+}
+
+#affiliation-notifications .notification-details {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+#affiliation-notifications .notification-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+#affiliation-notifications .notification-actions .btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+}
+
+#affiliation-notifications .empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: var(--spacing-xl);
+}
+
+#affiliation-notifications .empty-state i {
+    font-size: 3em;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+}
+
+#affiliation-notifications .empty-state h3 {
+    margin-bottom: var(--spacing-sm);
+}
+
+#affiliation-notifications .notification-counter {
+    background-color: var(--error-red);
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: var(--font-size-xs);
+    margin-left: var(--spacing-xs);
+    min-width: 20px;
+    text-align: center;
+}
+
+

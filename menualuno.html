@@ -636,6 +636,100 @@ O pagamento será efetuado em até 5 dias úteis após a solicitação.</h4>
             </div>
         </div>
 
+        <!-- Popup de Uso das Allay Coins -->
+        <div class="allay-coins-popup-overlay" id="allay-coins-popup-overlay" style="display: none;">
+            <div class="allay-coins-popup">
+                <div class="popup-header">
+                    <h3 class="popup-title">Como deseja usar suas Allay Coins?</h3>
+                    <button class="popup-close" id="popup-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="popup-content">
+                    <div class="coins-info">
+                        <div class="coins-available">
+                            <span class="coins-label">Saldo disponível:</span>
+                            <span class="coins-amount-popup" id="coins-amount-popup">0</span>
+                            <span class="coins-currency">AC</span>
+                        </div>
+                        <div class="coins-value-popup">
+                            <span class="coins-real-value-popup">≈ R$ <span id="coins-real-value-popup">0,00</span></span>
+                        </div>
+                    </div>
+                    <div class="usage-options">
+                        <button class="usage-option" id="usage-course">
+                            <div class="option-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="option-content">
+                                <h4 class="option-title">Usar em Curso</h4>
+                                <p class="option-description">Utilize suas Allay Coins como desconto em cursos</p>
+                            </div>
+                            <div class="option-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </button>
+                        <button class="usage-option" id="usage-pix">
+                            <div class="option-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="option-content">
+                                <h4 class="option-title">Sacar via PIX</h4>
+                                <p class="option-description">Converta suas Allay Coins em dinheiro</p>
+                            </div>
+                            <div class="option-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popup de Confirmação -->
+        <div class="confirmation-popup-overlay" id="confirmation-popup-overlay" style="display: none;">
+            <div class="confirmation-popup">
+                <div class="popup-header">
+                    <h3 class="popup-title" id="confirmation-title">Confirmar Uso</h3>
+                    <button class="popup-close" id="confirmation-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="popup-content">
+                    <div class="confirmation-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="confirmation-message">
+                        <p id="confirmation-message">Tem certeza que deseja usar suas Allay Coins?</p>
+                        <div class="confirmation-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Tipo de uso:</span>
+                                <span class="detail-value" id="usage-type-display">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Valor:</span>
+                                <span class="detail-value" id="usage-amount-display">-</span>
+                            </div>
+                        </div>
+                        <div class="warning-message">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Esta ação irá zerar seu saldo de Allay Coins e não pode ser desfeita.</span>
+                        </div>
+                    </div>
+                    <div class="confirmation-actions">
+                        <button class="btn-cancel" id="btn-cancel">
+                            <i class="fas fa-times"></i>
+                            <span>Cancelar</span>
+                        </button>
+                        <button class="btn-confirm" id="btn-confirm">
+                            <i class="fas fa-check"></i>
+                            <span>Confirmar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Tab Content: Certificados -->
         <div class="tab-content" id="tab-certificados">
             <div class="certificates-container">
@@ -2705,11 +2799,266 @@ try {
 });
 
 
-        // Carrega o script da API do YouTube
+            // Carrega o script da API do YouTube
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // ===== ALLAY COINS POPUP FUNCTIONALITY =====
+        let currentUsageType = '';
+        let currentCoinsAmount = 0;
+
+        // Event listeners para os popups de Allay Coins
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnRequestUse = document.getElementById('btn-request-use');
+            const popupOverlay = document.getElementById('allay-coins-popup-overlay');
+            const confirmationOverlay = document.getElementById('confirmation-popup-overlay');
+            const popupClose = document.getElementById('popup-close');
+            const confirmationClose = document.getElementById('confirmation-close');
+            const usageCourse = document.getElementById('usage-course');
+            const usagePix = document.getElementById('usage-pix');
+            const btnCancel = document.getElementById('btn-cancel');
+            const btnConfirm = document.getElementById('btn-confirm');
+
+            // Abrir popup principal
+            if (btnRequestUse) {
+                btnRequestUse.addEventListener('click', function() {
+                    openAllayCoinsPopup();
+                });
+            }
+
+            // Fechar popups
+            if (popupClose) {
+                popupClose.addEventListener('click', function() {
+                    closeAllayCoinsPopup();
+                });
+            }
+
+            if (confirmationClose) {
+                confirmationClose.addEventListener('click', function() {
+                    closeConfirmationPopup();
+                });
+            }
+
+            // Fechar popup clicando no overlay
+            if (popupOverlay) {
+                popupOverlay.addEventListener('click', function(e) {
+                    if (e.target === popupOverlay) {
+                        closeAllayCoinsPopup();
+                    }
+                });
+            }
+
+            if (confirmationOverlay) {
+                confirmationOverlay.addEventListener('click', function(e) {
+                    if (e.target === confirmationOverlay) {
+                        closeConfirmationPopup();
+                    }
+                });
+            }
+
+            // Opções de uso
+            if (usageCourse) {
+                usageCourse.addEventListener('click', function() {
+                    selectUsageType('course');
+                });
+            }
+
+            if (usagePix) {
+                usagePix.addEventListener('click', function() {
+                    selectUsageType('pix');
+                });
+            }
+
+            // Botões de confirmação
+            if (btnCancel) {
+                btnCancel.addEventListener('click', function() {
+                    closeConfirmationPopup();
+                });
+            }
+
+            if (btnConfirm) {
+                btnConfirm.addEventListener('click', function() {
+                    confirmUsage();
+                });
+            }
+        });
+
+        function openAllayCoinsPopup() {
+            // Atualizar valores no popup
+            const coinsBalance = document.getElementById('coins-balance');
+            const coinsRealValue = document.getElementById('coins-real-value');
+            const coinsAmountPopup = document.getElementById('coins-amount-popup');
+            const coinsRealValuePopup = document.getElementById('coins-real-value-popup');
+
+            if (coinsBalance && coinsAmountPopup) {
+                const currentBalance = coinsBalance.textContent;
+                coinsAmountPopup.textContent = currentBalance;
+                currentCoinsAmount = parseFloat(currentBalance.replace(',', '.'));
+            }
+
+            if (coinsRealValue && coinsRealValuePopup) {
+                coinsRealValuePopup.textContent = coinsRealValue.textContent;
+            }
+
+            // Verificar se tem saldo
+            if (currentCoinsAmount <= 0) {
+                alert('Você não possui Allay Coins suficientes para usar.');
+                return;
+            }
+
+            // Mostrar popup
+            const popupOverlay = document.getElementById('allay-coins-popup-overlay');
+            if (popupOverlay) {
+                popupOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeAllayCoinsPopup() {
+            const popupOverlay = document.getElementById('allay-coins-popup-overlay');
+            if (popupOverlay) {
+                popupOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function selectUsageType(type) {
+            currentUsageType = type;
+            
+            // Fechar popup principal
+            closeAllayCoinsPopup();
+            
+            // Abrir popup de confirmação
+            openConfirmationPopup();
+        }
+
+        function openConfirmationPopup() {
+            const confirmationOverlay = document.getElementById('confirmation-popup-overlay');
+            const usageTypeDisplay = document.getElementById('usage-type-display');
+            const usageAmountDisplay = document.getElementById('usage-amount-display');
+            const confirmationMessage = document.getElementById('confirmation-message');
+
+            // Atualizar conteúdo baseado no tipo
+            if (currentUsageType === 'course') {
+                if (usageTypeDisplay) usageTypeDisplay.textContent = 'Desconto em Curso';
+                if (confirmationMessage) confirmationMessage.textContent = 'Tem certeza que deseja usar suas Allay Coins como desconto em cursos?';
+            } else if (currentUsageType === 'pix') {
+                if (usageTypeDisplay) usageTypeDisplay.textContent = 'Saque via PIX';
+                if (confirmationMessage) confirmationMessage.textContent = 'Tem certeza que deseja sacar suas Allay Coins via PIX?';
+            }
+
+            if (usageAmountDisplay) {
+                usageAmountDisplay.textContent = `${currentCoinsAmount.toFixed(2).replace('.', ',')} AC (R$ ${currentCoinsAmount.toFixed(2).replace('.', ',')})`;
+            }
+
+            // Mostrar popup
+            if (confirmationOverlay) {
+                confirmationOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeConfirmationPopup() {
+            const confirmationOverlay = document.getElementById('confirmation-popup-overlay');
+            if (confirmationOverlay) {
+                confirmationOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        async function confirmUsage() {
+            if (!currentUser) {
+                alert('Usuário não autenticado');
+                return;
+            }
+
+            if (currentCoinsAmount <= 0) {
+                alert('Saldo insuficiente');
+                return;
+            }
+
+            try {
+                // Mostrar loading
+                const btnConfirm = document.getElementById('btn-confirm');
+                const originalContent = btnConfirm.innerHTML;
+                btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Processando...</span>';
+                btnConfirm.disabled = true;
+
+                // Registrar uso no Firestore
+                await registerAllayCoinsUsage();
+
+                // Zerar saldo do usuário
+                await resetUserAllayCoins();
+
+                // Atualizar interface
+                updateCoinsDisplay(0);
+
+                // Fechar popup
+                closeConfirmationPopup();
+
+                // Mostrar sucesso
+                const usageTypeText = currentUsageType === 'course' ? 'desconto em curso' : 'saque via PIX';
+                alert(`Solicitação de ${usageTypeText} registrada com sucesso! Suas Allay Coins foram utilizadas.`);
+
+                // Restaurar botão
+                btnConfirm.innerHTML = originalContent;
+                btnConfirm.disabled = false;
+
+            } catch (error) {
+                console.error('Erro ao processar uso das Allay Coins:', error);
+                alert('Erro ao processar solicitação. Tente novamente.');
+
+                // Restaurar botão
+                const btnConfirm = document.getElementById('btn-confirm');
+                btnConfirm.innerHTML = '<i class="fas fa-check"></i> <span>Confirmar</span>';
+                btnConfirm.disabled = false;
+            }
+        }
+
+        async function registerAllayCoinsUsage() {
+            const usageData = {
+                userEmail: currentUser.email,
+                usageType: currentUsageType,
+                amount: currentCoinsAmount,
+                amountInReais: currentCoinsAmount, // 1 AC = 1 R$
+                requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'pending',
+                processed: false
+            };
+
+            // Registrar na coleção de usos de Allay Coins
+            await firestore.collection('allayCoinsUsage').add(usageData);
+
+            console.log('Uso das Allay Coins registrado no Firestore');
+        }
+
+        async function resetUserAllayCoins() {
+            const userEmail = currentUser.email;
+            
+            // Zerar os bônus de indicação do usuário
+            await firestore.collection('students').doc(userEmail).update({
+                indicationBonuses: {}
+            });
+
+            console.log('Saldo de Allay Coins zerado');
+        }
+
+        function updateCoinsDisplay(newAmount) {
+            const coinsBalance = document.getElementById('coins-balance');
+            const coinsRealValue = document.getElementById('coins-real-value');
+
+            if (coinsBalance) {
+                coinsBalance.textContent = newAmount.toFixed(2).replace('.', ',');
+            }
+
+            if (coinsRealValue) {
+                coinsRealValue.textContent = newAmount.toFixed(2).replace('.', ',');
+            }
+
+            currentCoinsAmount = newAmount;
+        }
     </script>
 </body>
 </html>

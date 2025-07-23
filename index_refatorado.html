@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="style_refatorado.css">
     <link rel="stylesheet" href="financial-styles.css">
     <link rel="stylesheet" href="costs-styles.css">
+    <link rel="stylesheet" href="affiliation-notifications.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Chart.js for dashboard charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -54,6 +55,8 @@
                                 Notificações
                             </a>
                         </li>
+
+                       
 
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-section="mudar">
@@ -122,19 +125,19 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-section="costs">
                                 <i class="fas fa-money-bill-wave"></i>
-                                Custos
+                                Despesas Financeira
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-section="affiliation-notifications">
+                                <i class="fas fa-handshake"></i>
+                                Notificação de Afiliação
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-section="mudar">
-                                <i class="fas fa-calendar-alt"></i>
-                                 Calendário Financeiro
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-section="mudar">
-                                <i class="fas fa-bullseye"></i>
-                                 Investimentos
+                                <i class="fas fa-hourglass-half"></i>
+                                 Despesas Futuras
                             </a>
                         </li>
                     </ul>
@@ -605,6 +608,55 @@
                         <div id="notifications-list" class="student-list">
                             <!-- Notifications will be dynamically added here -->
                         </div>
+                    </div>
+                </div>
+
+                <!-- Affiliation Notifications Section -->
+                <div id="affiliation-notifications" class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-handshake"></i>
+                                Notificações de Afiliação
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="refreshAffiliationNotifications()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar Lista
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Filter Buttons -->
+                        <div class="filter-buttons">
+                            <button class="btn btn-primary" onclick="filterAffiliationNotifications('all')">
+                                <i class="fas fa-list"></i>
+                                Todas
+                            </button>
+                            <button class="btn btn-secondary" onclick="filterAffiliationNotifications('pending')">
+                                <i class="fas fa-clock"></i>
+                                Pendentes
+                            </button>
+                            <button class="btn btn-secondary" onclick="filterAffiliationNotifications('approved')">
+                                <i class="fas fa-check"></i>
+                                Aprovadas
+                            </button>
+                            <button class="btn btn-secondary" onclick="filterAffiliationNotifications('rejected')">
+                                <i class="fas fa-times"></i>
+                                Rejeitadas
+                            </button>
+                        </div>
+                        
+                        <!-- Notifications List -->
+                        <div id="affiliation-notifications-list" class="notification-list">
+                            <div class="empty-state">
+                                <i class="fas fa-bell-slash"></i>
+                                <h3>Carregando notificações...</h3>
+                                <p>Aguarde enquanto carregamos as solicitações de afiliação.</p>
+                            </div>
+                        </div>
+                        
+                        <div id="affiliation-notifications-message" class="message" style="display: none;"></div>
                     </div>
                 </div>
 
@@ -1555,13 +1607,13 @@
             </div>
             <div class="form-group">
                 <label class="form-label" for="indicator-student-search">Aluno Indicador</label>
-                <input type="text" id="indicator-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication">
+                <input type="text" id="indicator-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication("indicator")">
                 <div id="indicator-student-results" class="search-results-list" style="display: none;"></div>
                 <input type="hidden" id="selected-indicator-email">
             </div>
             <div class="form-group">
                 <label class="form-label" for="indicated-student-search">Aluno Indicado</label>
-                <input type="text" id="indicated-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication">
+                <input type="text" id="indicated-student-search" class="form-input" placeholder="Buscar por nome ou CPF..." onkeyup="searchStudentsForIndication("indicated")">
                 <div id="indicated-student-results" class="search-results-list" style="display: none;"></div>
                 <input type="hidden" id="selected-indicated-email">
             </div>
@@ -1699,5 +1751,6 @@
 <script type="module" src="script.js"></script>
 <script src="financial.js"></script>
 <script src="costs.js"></script>
+<script type="module" src="affiliation-notifications.js"></script>
 </body>
 </html>

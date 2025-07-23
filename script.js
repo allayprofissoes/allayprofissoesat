@@ -19,6 +19,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const firestore = getFirestore(app);
+        window.db = firestore;
         const storage = getStorage(app);
 
         // Global variables
@@ -750,7 +751,7 @@
                 showMessage(teacherMessageDiv, "Dados carregados para edição. Modifique os campos necessários e clique em 'Atualizar Professor'.", "warning");
             } catch (error) {
                 console.error("Erro ao carregar dados do professor:", error);
-                showMessage(teachersMessageDiv, "Erro ao carregar dados do professor.", "error");
+                showMessage(teacherMessageDiv, "Erro ao carregar dados do professor.", "error");
             }
         }
 
@@ -2621,5 +2622,7 @@
         updateDashboardStats();
 
     ;
+
+
 
 

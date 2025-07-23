@@ -4602,3 +4602,342 @@ button:focus,
 
 
 
+
+
+/* ===== ALLAY COINS POPUP STYLES ===== */
+.allay-coins-popup-overlay,
+.confirmation-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.allay-coins-popup,
+.confirmation-popup {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 1rem;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.popup-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-title {
+    color: #e2e8f0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.popup-close {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.popup-content {
+    padding: 1.5rem;
+}
+
+/* Coins Info */
+.coins-info {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.coins-available {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.coins-label {
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.coins-amount-popup {
+    color: #3b82f6;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.coins-currency {
+    color: #3b82f6;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.coins-value-popup {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+/* Usage Options */
+.usage-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.usage-option {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    color: inherit;
+}
+
+.usage-option:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.option-icon {
+    width: 3rem;
+    height: 3rem;
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.option-content {
+    flex: 1;
+}
+
+.option-title {
+    color: #e2e8f0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+
+.option-description {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.option-arrow {
+    color: #64748b;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* Confirmation Popup Specific Styles */
+.confirmation-icon {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-icon i {
+    font-size: 3rem;
+    color: #f59e0b;
+}
+
+.confirmation-message {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.confirmation-message p {
+    color: #e2e8f0;
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.confirmation-details {
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.detail-item:not(:last-child) {
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.detail-label {
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.detail-value {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.warning-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    color: #fca5a5;
+    font-size: 0.875rem;
+}
+
+.warning-message i {
+    color: #ef4444;
+    flex-shrink: 0;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-cancel,
+.btn-confirm {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-cancel {
+    background: rgba(71, 85, 105, 0.8);
+    color: #e2e8f0;
+    border: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+.btn-cancel:hover {
+    background: rgba(71, 85, 105, 1);
+    border-color: rgba(71, 85, 105, 0.6);
+}
+
+.btn-confirm {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.btn-confirm:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .allay-coins-popup,
+    .confirmation-popup {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+    
+    .popup-header {
+        padding: 1rem;
+    }
+    
+    .popup-content {
+        padding: 1rem;
+    }
+    
+    .usage-option {
+        padding: 1rem;
+    }
+    
+    .option-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1rem;
+    }
+    
+    .confirmation-actions {
+        flex-direction: column;
+    }
+    
+    .btn-cancel,
+    .btn-confirm {
+        width: 100%;
+    }
+}
+
